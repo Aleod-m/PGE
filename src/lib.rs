@@ -1,3 +1,3 @@
-pub extern crate math;
-pub extern crate log;
-pub extern crate window;
+pub mod math;
+pub mod log;
+pub mod window;

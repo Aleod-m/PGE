@@ -1,7 +1,7 @@
-use crate::vec2d::Vec2D;
-use crate::vec3d::Vec3D;
-use crate::vec4d::Vec4D;
-use crate::fct::fast_floor;
+use crate::math::vec2d::Vec2D;
+use crate::math::vec3d::Vec3D;
+use crate::math::vec4d::Vec4D;
+use crate::math::fct::fast_floor;
 const PSIZE : usize = 2048;
 const PMASK : usize = 2047;
 const STRETCH_CONSTANT_2D : f64 = -0.211324865405187;

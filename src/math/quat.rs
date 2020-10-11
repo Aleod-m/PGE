@@ -1,4 +1,4 @@
-use crate::vec3d::Vec3D;
+use crate::math::vec3d::Vec3D;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Quat{

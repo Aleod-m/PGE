@@ -1,4 +1,4 @@
-pub extern crate log;
+use crate::log;
 use glfw::Context;
 
 //use gl::{ClearColor};
