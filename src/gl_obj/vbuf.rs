@@ -32,6 +32,13 @@ impl Vbuf {
         }
     }
 
+}
+impl GlObj for Vbuf {
+
+    pub fn id(&self) {
+        self._id
+    }
+
     pub fn bind(&self) {
         unsafe {gl::BindBuffer(gl::ARRAY_BUFFER, self._id)};
     }

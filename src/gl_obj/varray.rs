@@ -91,6 +91,14 @@ impl VArray {
 
     }
 
+}
+
+impl GlObj for VArray {
+
+    pub fn id(&self) {
+        self._id
+    }
+
     pub fn bind(&self) {
         unsafe {gl::BindVertexArray(self._id)};
     }

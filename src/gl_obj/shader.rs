@@ -63,10 +63,19 @@ impl Program {
     
     }
 
-    pub fn set_used(&self) {
-        unsafe {
-            gl::UseProgram(self._id);
-        }
+}
+
+impl GlObj for Program {
+
+    pub fn id(&self) {
+        self._id
+    }
+
+    pub fn bind(&self) {
+        unsafe {gl::UseProgram(self._id);}
+    }
+    pub fn bind(&self) {
+        unsafe {gl::UseProgram(0);}
     }
     
 }

@@ -23,6 +23,13 @@ impl Ibuf {
         buffer
     }
 
+}
+
+impl GlObj for Ibuf {
+    pub fn id(&self) {
+        self._id
+    }
+
     fn bind(&self) {
         unsafe {gl::BindBuffer(gl::ARRAY_BUFFER, self._id)};
     }
