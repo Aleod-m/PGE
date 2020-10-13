@@ -74,8 +74,8 @@ impl GlObj for Program {
     pub fn bind(&self) {
         unsafe {gl::UseProgram(self._id);}
     }
-    pub fn bind(&self) {
-        unsafe {gl::UseProgram(0);}
+    pub fn unbind(&self) {
+        unsafe {gl::UseProgram(0 as GLuint);}
     }
     
 }
