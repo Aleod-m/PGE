@@ -80,6 +80,12 @@ impl From<(f64, f64)> for Vec2D {
     }
 }
 
+impl Into<Vec<f64>> for Vec2D {
+    fn into(self) -> Vec<f64> {
+        vec![self.x, self.y]
+    }
+}
+
 
 impl std::ops::Add for Vec2D {
     type Output = Vec2D;

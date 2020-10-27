@@ -125,6 +125,12 @@ impl From<(f64, f64, f64)> for Vec3D {
     }
 }
 
+impl Into<Vec<f64>> for Vec3D {
+    fn into(self) -> Vec<f64> {
+        vec![self.x, self.y, self.z]
+    }
+}
+
 impl std::ops::Add for Vec3D {
     type Output = Vec3D;
     fn add(self, other : Self) -> Self {

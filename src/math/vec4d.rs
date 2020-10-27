@@ -62,6 +62,11 @@ impl From<(f64, f64, f64, f64)> for Vec4D {
     }
 }
 
+impl Into<Vec<f64>> for Vec4D {
+    fn into(self) -> Vec<f64> {
+        vec![self.x, self.y, self.z, self.w]
+    }
+}
 
 impl std::ops::Add for Vec4D {
     type Output = Vec4D;
