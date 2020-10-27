@@ -74,6 +74,13 @@ impl Vec2D {
 }
 
 
+impl From<(f64, f64)> for Vec2D {
+    fn from(other: (f64, f64)) -> Self {
+        Vec2D::new(other.0, other.1)
+    }
+}
+
+
 impl std::ops::Add for Vec2D {
     type Output = Vec2D;
     fn add(self, other : Self) -> Self {

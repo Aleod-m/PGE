@@ -32,7 +32,7 @@ impl Vec4D {
         self.w *= k;
     }
 
-    pub fn normalized(&self) -> Self{
+    pub fn normalized(&self) -> Self {
         let k = 1.0_f64 / self.norm();
         Self {
             x:self.x * k,
@@ -46,7 +46,7 @@ impl Vec4D {
         self.x*v2.x + self.y*v2.y + self.z*v2.z + self.w*v2.w
     }
 
-    pub fn null() -> Self{
+    pub fn null() -> Self {
         Vec4D {
             x: 0_f64,
             y: 0_f64,
@@ -55,6 +55,13 @@ impl Vec4D {
         }
     }
 }
+
+impl From<(f64, f64, f64, f64)> for Vec4D {
+    fn from(other: (f64, f64, f64, f64)) -> Self {
+        Vec4D::new(other.0, other.1, other.2, other.3)
+    }
+}
+
 
 impl std::ops::Add for Vec4D {
     type Output = Vec4D;

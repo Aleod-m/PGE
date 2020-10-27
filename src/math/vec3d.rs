@@ -119,6 +119,12 @@ impl Vec3D {
     }
 }
 
+impl From<(f64, f64, f64)> for Vec3D {
+    fn from(other: (f64, f64, f64)) -> Self {
+        Vec3D::new(other.0, other.1, other.2)
+    }
+}
+
 impl std::ops::Add for Vec3D {
     type Output = Vec3D;
     fn add(self, other : Self) -> Self {
