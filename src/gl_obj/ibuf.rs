@@ -1,4 +1,6 @@
 use gl::types::*;
+use super::GlObj;
+
 
 pub struct Ibuf {
     _id : GLuint
@@ -26,7 +28,7 @@ impl Ibuf {
 }
 
 impl GlObj for Ibuf {
-    pub fn id(&self) {
+    fn id(&self) -> GLuint {
         self._id
     }
 
