@@ -71,6 +71,10 @@ impl Vec2D {
             y : 1_f64,
         }
     }
+
+    pub fn to_vec(&self) -> Vec<f64> {
+        vec![self.x, self.y]
+    }
 }
 
 
@@ -80,11 +84,7 @@ impl From<(f64, f64)> for Vec2D {
     }
 }
 
-impl Into<Vec<f64>> for Vec2D {
-    fn into(self) -> Vec<f64> {
-        vec![self.x, self.y]
-    }
-}
+
 
 
 impl std::ops::Add for Vec2D {

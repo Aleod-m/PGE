@@ -54,17 +54,15 @@ impl Vec4D {
             w: 0_f64,
         }
     }
+
+    pub fn to_vec(&self) -> Vec<f64> {
+        vec![self.x, self.y, self.z, self.w]
+    }
 }
 
 impl From<(f64, f64, f64, f64)> for Vec4D {
     fn from(other: (f64, f64, f64, f64)) -> Self {
         Vec4D::new(other.0, other.1, other.2, other.3)
-    }
-}
-
-impl Into<Vec<f64>> for Vec4D {
-    fn into(self) -> Vec<f64> {
-        vec![self.x, self.y, self.z, self.w]
     }
 }
 

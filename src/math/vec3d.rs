@@ -117,17 +117,16 @@ impl Vec3D {
 
         return (qrot * qvec * qrot.inv()).v
     }
+
+    pub fn to_vec(&self) -> Vec<f64> {
+        vec![self.x, self.y, self.z]
+
+    }
 }
 
 impl From<(f64, f64, f64)> for Vec3D {
     fn from(other: (f64, f64, f64)) -> Self {
         Vec3D::new(other.0, other.1, other.2)
-    }
-}
-
-impl Into<Vec<f64>> for Vec3D {
-    fn into(self) -> Vec<f64> {
-        vec![self.x, self.y, self.z]
     }
 }
 
