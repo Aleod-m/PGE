@@ -7,6 +7,7 @@ use crate::ressources::{self, Ressources};
 struct ChunkType {
     bytes : [u8; 4],
 }
+
 impl ChunkType {
     
     fn bytes(&self) -> [u8; 4] {
@@ -25,7 +26,11 @@ impl ChunkType {
     fn is_safe_to_copy(&self) -> bool {
         self.bytes[0] & 32_u8 == 1
     }
+    fn as_string(&self) -> String {
+        String::from_utf8(self.bytes.to_vec()).unwrap()
+    }
 }
+
 impl From<[u8; 4]> for ChunkType {
     fn from(other : [u8; 4]) -> Self {
         Self {
@@ -100,6 +105,8 @@ pub enum Error {
     PngFileCorrupted { name : String }
 }
 
+
+
 pub struct Png {
     chunks : Vec<Chunk>,
 }
@@ -144,6 +151,9 @@ impl Png {
                 crc
             };
             chunks.push(chunk);
+            if chunk_type.as_string() == "IEND" {
+                is_parse_complete = true;
+            }
         }
 
         Ok(Self {

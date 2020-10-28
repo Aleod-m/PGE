@@ -1,3 +1,22 @@
+/*
+ * 2014 OpenSimplex Noise in Java.
+ * by Kurt Spencer
+ * 
+ * Updated Dec 2019 and Feb 2020:
+ * - New lattice-symmetric gradient sets
+ * - Optional alternate lattice orientation evaluators
+ * 
+ * This implementation has been updated to slightly improve its output, but it is recommented to first
+ * try the newer OpenSimplex2S or OpenSimplex2F noise. These are located in the OpenSimplex2 repo:
+ * https://github.com/KdotJPG/OpenSimplex2
+ * 
+ * In the event that the output of this OpenSimplex continues to better fit your project's needs than
+ * either OpenSimplex2 variant, an updated backport of DigitalShadow's optimization is available here:
+ * https://github.com/KdotJPG/OpenSimplex2/blob/master/java/legacy/OpenSimplex.java
+ * 
+ * This is mostly kept here for reference. In particular, the 4D code is very slow.
+ */
+
 use crate::math::vec2d::Vec2D;
 use crate::math::vec3d::Vec3D;
 use crate::math::vec4d::Vec4D;
