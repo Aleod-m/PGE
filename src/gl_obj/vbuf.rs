@@ -1,75 +1,57 @@
-use std;
-use crate::math::{
-    Vec3D,
-    Vec2D
-};
-use super::GlObj;
+// Extern imports
+use std::mem;
 use gl::types::*;
+// Crate imports
+use crate::math::{Vec3D, Vec2D};
+use super::GlObj;
+
+pub struct Vertex {
+    vertice : Vec3D,
+    color : Vec3D,
+    uv : Vec2D,
+}
+
+impl Vertex {
+    pub fn to_data(&self) -> Vec<f64> {
+        let mut v : Vec<f64> = Vec::with_capacity(8);
+        v.extend(self.vertice.to_vec());
+        v.extend(self.color.to_vec());
+        v.extend(self.uv.to_vec());
+        return v;
+    }
+}
+
 
 pub struct Vbuf {
     _id : GLuint,
-    verticies_data : Vec<f64>,
+    verticies : Vec<f64>,
 }
 
 impl Vbuf {
-    pub fn new(data: Vec<f64>) -> Self {
+    pub fn new(data: Vec<Vertex>) -> Self {
         unsafe {
+            let verticies = data.iter().map(|vertex| vertex.to_data());
+            let verticies = {
+                let mut v = Vec::<f64>::new();
+                for vert in verticies {
+                    v.extend(vert.iter())
+                }
+                v
+            };
             let mut buf = Self {
-                _id : std::mem::zeroed(),
-                verticies_data : data,
+                _id : mem::zeroed(),
+                verticies : verticies,
             };
             gl::GenBuffers(1 as GLsizei, &mut buf._id);
             gl::BufferData(
                 gl::ARRAY_BUFFER,
-                (data.len() * std::mem::size_of::<f64>()) as GLsizeiptr,
+                (data.len() * mem::size_of::<f64>()) as GLsizeiptr,
                 data.as_ptr() as *const GLvoid,
                 gl::STATIC_DRAW);
             buf
         }
     }
 
-    pub fn default() -> Self {
-        let mut buf = Self {
-            _id : std::mem::zeroed(),
-            verts : None,
-            colors : None,
-            uvs : None,
-        };
-        gl::GenBuffers(1 as GLsizei, &mut buf._id);
-        buf
-    }
-
-
-    fn update_data(&self){
-
-        let mut it;
-        let mut v : Vec<f64>;
-        match (self.verts, self.colors, self.uvs) {
-
-            (Some(verts), Some(colors), Some(uvs)) => {
-                vlen += verts.len() * 8;
-                it = verts.iter().zip(self.colors.iter()).zip(uvs.iter());
-            }
-
-            (Some(verts), None, Some(uvs)) => {
-                vlen += verts.len() * 5;
-                it = verts.iter().zip(uvs.iter());
-            }
-
-            (Some(verts), Some(colors), None) => {
-                
-            }
-            (Some(verts), None, None) => {
-                
-            }
-
-            (None, None, None) | _ => {}
-        }
-
-        let mut v : Vec<f64> = Vec::with_capacity(vlen);
-        
-
-    }
 }
 
 impl GlObj for Vbuf {
@@ -80,7 +62,6 @@ impl GlObj for Vbuf {
 
     fn bind(&self) {
         unsafe {gl::BindBuffer(gl::ARRAY_BUFFER, self._id)};
-        self.update_data();
     }
 
     fn unbind(&self) {
