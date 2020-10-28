@@ -1,9 +1,15 @@
-pub mod png;
-
+// Extern imports
 use std::path::{Path, PathBuf};
 use std::fs;
 use std::io::{self, Read};
 use std::ffi;
+// Module imports
+pub mod png;
+
+
+
+
+
 
 #[derive(Debug)]
 pub enum Error {
@@ -53,6 +59,16 @@ impl Ressources {
                 ffi::CString::from_vec_unchecked(content)
             }
         )
+    }
+
+    pub fn load_bytes(&self, name : &str) -> Result<Vec<u8>, Error>{
+        let mut file = fs::File::open(self.path.join(name))?;
+
+        let mut bytes: Vec<u8> = Vec::with_capacity(
+            file.metadata()?.len() as usize + 1
+        );
+        file.read_to_end(&mut bytes)?;
+        Ok(bytes)
     }
 }
 
