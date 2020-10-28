@@ -1,8 +1,25 @@
 use gl::types::*;
-use std::path::Path;
+use std::path::{Path, PathBuf};
+use crate::ressources::{self, Ressources};
 use std::ffi::{CString};
-use std::fs;
+use super::GlObj;
 
+#[derive(Debug)]
+pub enum Error {
+    ResourceLoad { name: String, inner: ressources::Error },
+    CanNotDetermineShaderTypeForResource { name: String },
+    CompileError { name: String, message: String },
+    LinkError { name: String, message: String },
+}
+
+const POSSIBLE_EXT: [(&str, gl::types::GLenum); 6] = [
+            (".vert",gl::VERTEX_SHADER),
+            (".tesc",gl::TESS_CONTROL_SHADER),
+            (".tese",gl::TESS_EVALUATION_SHADER),
+            (".geom",gl::GEOMETRY_SHADER),
+            (".frag",gl::FRAGMENT_SHADER),
+            (".comp",gl::COMPUTE_SHADER),
+        ];
 
 fn create_empty_cstring_with_len(len: usize) -> CString {
     // allocate buffer of correct size
@@ -13,14 +30,27 @@ fn create_empty_cstring_with_len(len: usize) -> CString {
     unsafe { CString::from_vec_unchecked(buffer) }
 }
 
-
 pub struct Program {
     _id : GLuint,
 }
 
 impl Program {
+
+    pub fn from_res(res : &Ressources, name: &str) -> Result<Program, Error> {
+
+        let ressources_names = POSSIBLE_EXT.iter()
+        .map(|(file_ext, _)| format!("{}{}", name, file_ext))
+        .collect::<Vec<String>>();
+
+        let shaders = ressources_names.iter()
+        .map(|ressource_name| Shader::from_res(res, ressource_name))
+        .collect::<Result<Vec<Shader>, Error>>()?;
+
+        Program::from_shaders(&shaders[..]).map_err(|message| Error::LinkError{name : name.to_owned(), message})
+
+    }
     
-    pub fn new(shaders : &[Shader]) -> Self {
+    pub fn from_shaders(shaders : &[Shader]) -> Result<Program, String> {
         let id = unsafe { gl::CreateProgram()};
 
         for shader in shaders {
@@ -50,16 +80,17 @@ impl Program {
                 );
             }
 
-            println!("{}",error.to_string_lossy().into_owned());
+            return Err(format!("{}",error.to_string_lossy().into_owned()));
         }
 
 
         for shader in shaders {
             unsafe { gl::DetachShader(id, shader.id()); }
         }
-        Self {
+        
+        Ok(Self {
             _id : id,
-        }
+        })
     
     }
 
@@ -67,14 +98,14 @@ impl Program {
 
 impl GlObj for Program {
 
-    pub fn id(&self) {
+    fn id(&self) -> GLuint {
         self._id
     }
 
-    pub fn bind(&self) {
+    fn bind(&self) {
         unsafe {gl::UseProgram(self._id);}
     }
-    pub fn unbind(&self) {
+    fn unbind(&self) {
         unsafe {gl::UseProgram(0 as GLuint);}
     }
     
@@ -95,28 +126,33 @@ pub struct Shader {
 
 impl Shader {
 
-    pub fn new(path : &Path) -> Self {
-        // Find the shader type by checking the file extension
-        let stype = match path.extension().and_then(std::ffi::OsStr::to_str) {
-            Some("vert") => gl::VERTEX_SHADER,
-            Some("tesc") => gl::TESS_CONTROL_SHADER,
-            Some("tese") => gl::TESS_EVALUATION_SHADER,
-            Some("geom") => gl::GEOMETRY_SHADER,
-            Some("frag") => gl::FRAGMENT_SHADER,
-            Some("comp") => gl::COMPUTE_SHADER,
-            Some(&_) => {
-                println!("The extension is not a shader extension!");
-                0 as GLenum
-            }
-            None => {
-                println!("The given path is wrong!");
-                0 as GLenum
-            }
-        };
-        
-        let id = unsafe {gl::CreateShader(stype)};
+    pub fn from_res(res: &Ressources, name: &str) -> Result<Shader, Error> {
+        const POSSIBLE_EXT: [(&str, gl::types::GLenum); 6] = [
+            (".vert",gl::VERTEX_SHADER),
+            (".tesc",gl::TESS_CONTROL_SHADER),
+            (".tese",gl::TESS_EVALUATION_SHADER),
+            (".geom",gl::GEOMETRY_SHADER),
+            (".frag",gl::FRAGMENT_SHADER),
+            (".comp",gl::COMPUTE_SHADER),
+        ];
 
-        let source = Self::parse_shader(path);
+        let stype : GLenum = POSSIBLE_EXT.iter()
+        .find(|&&(extension, _)| {
+            name.ends_with(extension)
+        })
+        .map(|&(_, kind)| kind )
+        .ok_or(Error::CanNotDetermineShaderTypeForResource{name : name.to_owned()})?;
+
+        let source = res.load_cstring(name)
+        .map_err(|e| {Error::ResourceLoad{name : name.to_owned(), inner : e}})?;
+
+
+        Shader::from_source(source, stype).map_err(|e| {Error::CompileError{name : name.to_owned(), message : e}})
+    }
+
+    pub fn from_source(source : CString, shader_type : GLenum) -> Result<Self, String> {
+        let id = unsafe {gl::CreateShader(shader_type)};
+
 
         unsafe {
             gl::ShaderSource(id, 1, &source[..].as_ptr(), std::ptr::null());
@@ -146,18 +182,14 @@ impl Shader {
                 );
             }
 
-            println!("{}",error.to_string_lossy().into_owned());
+            return Err( format!("There was an error in the shader compilation: {}",error.to_string_lossy().into_owned()));
         }
 
-        Self {
+        Ok(Self {
             _id : id,
-        }
+        })
     }
 
-    fn parse_shader(path: &Path) -> CString {
-        let source_str = fs::read_to_string(path).unwrap();
-        CString::new(source_str).unwrap()
-    }
 
     pub fn id(&self) -> GLuint {
         self._id
