@@ -1,6 +1,5 @@
 // External imports
 use gl::types::*;
-use std::path::{Path, PathBuf};
 use std::ffi::{CString};
 // Crate imports
 use crate::ressources::{self, Ressources};

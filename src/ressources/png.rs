@@ -1,5 +1,4 @@
 // External imports
-use std::path::{Path, PathBuf};
 use std::convert::TryInto;
 // Crate imports
 use crate::ressources::{self, Ressources};
