@@ -1,6 +1,9 @@
+// External imports
 use gl;
 use gl::types::*;
-use crate::Vbuf;
+// Crate imports
+use super::Vbuf;
+use super::GlObj;
 
 pub struct VbElements {
     etype : GLenum,
@@ -95,15 +98,15 @@ impl VArray {
 
 impl GlObj for VArray {
 
-    pub fn id(&self) {
+    fn id(&self) -> GLuint {
         self._id
     }
 
-    pub fn bind(&self) {
+    fn bind(&self) {
         unsafe {gl::BindVertexArray(self._id)};
     }
 
-    pub fn unbind(&self) {
+    fn unbind(&self) {
         unsafe {gl::BindVertexArray(0)};
     }
 }

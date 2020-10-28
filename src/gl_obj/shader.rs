@@ -1,7 +1,9 @@
+// External imports
 use gl::types::*;
 use std::path::{Path, PathBuf};
-use crate::ressources::{self, Ressources};
 use std::ffi::{CString};
+// Crate imports
+use crate::ressources::{self, Ressources};
 use super::GlObj;
 
 #[derive(Debug)]
