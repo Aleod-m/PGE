@@ -42,7 +42,7 @@ impl From<[u8; 4]> for ChunkType {
 
 struct Chunk {
     length : u32,
-    chunk_type : ChunkType,
+    chunk_type : &ChunkType,
     data : Vec<u8>,
     crc : [u8; 4],
 }
@@ -61,34 +61,35 @@ impl Chunk {
 
     fn crc(&self) -> u32 {
         let CRC_POL : u32 = 0xedb88320;
-        let crc_table : [u32; 256] = [0; 256];
-        let c : u32;
-        let n = 0_u32;
+        let mut crc_table : [u32; 256] = [0; 256];
+        let mut c : u32;
+        let mut n = 0_u32;
         while n < 256 {
             n += 1_u32;
             c = n as u32;
-            let k = 0_u8;
+            let mut k = 0_u8;
             while k < 8 {
                 k += 1_u8;
                 if c & 1_u32 == 1{
                     c = CRC_POL ^ (c >> 1);
                 }
                 else {
-                    c = c>>1;
+                    c = c >> 1;
                 }
             } 
             crc_table[n as usize] = c;
         }
         
-        let buf : Vec<u8> = Vec::with_capacity(self.data.len() + 8);
+        let mut buf : Vec<u8> = Vec::with_capacity(self.data.len() + 8);
         buf.extend_from_slice(&self.chunk_type.bytes);
         buf.extend_from_slice(self.data.as_slice());
 
 
-        let c : u32 = 0xffffffff;
-        let n = 0;
+        let mut c : u32 = 0xffffffff;
+        let mut n = 0;
         while n < buf.len() {
-            c = crc_table[((c ^ buf[n] as u32) & 0xff_u32 )as usize] ^ (c>>8);
+            c = crc_table[((c ^ buf[n] as u32) & 0xff_u32 )as usize] ^ (c >> 8);
+            n = n + 1;
         }
         return c ^ 0xffffffff;
     }
@@ -102,7 +103,8 @@ impl Chunk {
 #[derive(Debug)]
 pub enum Error {
     ResourceLoad { name : String, inner : ressources::Error },
-    PngFileCorrupted { name : String }
+    PngFileCorrupted { name : String },
+    InvalidChunk { name : String },
 }
 
 
@@ -120,11 +122,11 @@ impl Png {
 
     pub fn from_res(res : &Ressources, name: &str) -> Result<Png, Error> {
         const ext : &str = ".png";
-        let chunks : Vec<Chunk> = Vec::new();
+        let mut chunks : Vec<Chunk> = Vec::new();
 
         let ressource_name = format!("{}{}", name, ext);
 
-        let data = res.load_bytes(name)
+        let data = res.load_bytes(&ressource_name.to_owned())
         .map_err(|error| {Error::ResourceLoad{name : name.to_owned(), inner : error}})?;
 
         let signature : &[u8] = &data[0..8];
@@ -132,14 +134,14 @@ impl Png {
             return Err(Error::PngFileCorrupted{name : name.to_owned()});
         }
 
-        let is_parse_complete = false;
-        let chunk_indice = 8;
+        let mut is_parse_complete = false;
+        let mut chunk_indice = 8;
         while !is_parse_complete {
             let chunk : Chunk;
             let length = u32::from_be_bytes(data[chunk_indice..chunk_indice+4].try_into().unwrap());
             chunk_indice += 4;
             let chunk_type_bytes : [u8; 4] = data[chunk_indice..chunk_indice+4].try_into().unwrap();
-            let chunk_type = ChunkType::from(chunk_type_bytes);
+            let chunk_type = &ChunkType::from(chunk_type_bytes);
             chunk_indice += 4;
             let chunk_data = &data[chunk_indice..chunk_indice+length as usize];
             chunk_indice += length as usize;
