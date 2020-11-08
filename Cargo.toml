@@ -12,3 +12,7 @@ chrono = "*"
 
 [dependencies.glfw]
 git = "https://github.com/bjz/glfw-rs.git"
+
+[[example]]
+name = "sandbox"
+path = "examples/sandbox.rs"
