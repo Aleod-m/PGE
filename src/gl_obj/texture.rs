@@ -27,16 +27,16 @@ pub struct Texture {
 impl Texture {
 
     pub fn from_res(res : &Ressources, name : &str) /*-> Result<Texture, Error> */{
-        //TODO 0fn from_res
+        //TODO fn from_res for Texture
     }
 
     pub fn from_data(data : Vec<u32>, format : TextureFormat) {
-        //TODO fn from_data
+        //TODO fn from_data for Texture
     }
 
 
     pub fn from_color(w : u32, h : u32, color : Vec3D) {
-        //TODO fn from_color
+        //TODO fn from_color for Texture
     }
 }
 
