@@ -10,6 +10,7 @@ pub struct HsbColor {
 impl HsbColor {
 
     pub fn new(hue : f64, saturation : f64, brightness : f64) -> Self {
+        //TODO : treat invalid parameters case 
         Self {
             hue,
             saturation,
