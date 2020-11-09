@@ -1,9 +1,8 @@
 use crate::log;
 use glfw::Context;
 
-//use gl::{ClearColor};
-//use gl::types::*;
-
+use gl::types::*;
+use gl;
 
 pub struct App{
     pub client_logger : log::Logger,
@@ -33,12 +32,14 @@ impl App {
 
         let win_innit = glfw.create_window(width, height, title, glfw::WindowMode::Windowed);
         
-        let mut window : glfw::Window; let events : std::sync::mpsc::Receiver<(f64, glfw::WindowEvent)>;
+        let mut window : glfw::Window;
+        let events : std::sync::mpsc::Receiver<(f64, glfw::WindowEvent)>;
         match win_innit {
             Some(v) =>  {window = v.0;events = v.1;},
             None => {core_logger.fatal(&String::from("Failed to create GLFW window."))},
         };
-
+        
+        gl::load_with(|s| window.get_proc_address(s) as *const _);
         window.make_current();
         window.set_key_polling(true);
     
@@ -54,17 +55,18 @@ impl App {
 
     pub fn run(&mut self){
         self.core_logger.info(&String::from("App is Running"));
+        unsafe {gl::ClearColor(1.,0.,0.,1.);}
         // Loop until the user closes the window
         while !self.window.should_close() {
             // Swap front and back buffers
             self.window.swap_buffers();
-
+            unsafe {gl::Clear(gl::COLOR_BUFFER_BIT);}
             // Poll for and process events
             self.glfw.poll_events();
             for (_, event) in glfw::flush_messages(&self.events) {
-                self.core_logger.info(&event);
+                self.core_logger.trace(&event);
                 match event {
-                    glfw::WindowEvent::Key(glfw::Key::Escape, _, glfw::Action::Press, _) => {
+                    glfw::WindowEvent::Key(glfw::Key::Escape, _, glfw::Action::Release, _) => {
                         self.window.set_should_close(true)
                     },
                     _ => {},
