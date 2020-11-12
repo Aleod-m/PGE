@@ -14,6 +14,7 @@ impl Vec3D {
             z : z,
         }
     }
+    
     pub fn sq_norm(&self) -> f64 {
         self.x * self.x + self.y * self.y + self.z* self.z
     }

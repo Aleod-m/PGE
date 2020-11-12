@@ -2,7 +2,7 @@
 use std::convert::{TryInto, TryFrom};
 // Crate imports
 use crate::ressources::{self, Ressources};
-use crate::gl_obj::texture::{Texture, TextureFormat};
+use crate::render::texture::{Texture, TextureFormat};
 use crate::ressources::png::{
     chunktype::ChunkType,
     chunk::{self, Chunk},

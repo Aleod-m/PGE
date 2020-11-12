@@ -18,6 +18,7 @@ pub enum TextureFormat {
 
 pub struct Texture {
     _id : GLuint,
+    gl : gl::Gl,
     data : Vec<u8>,
     width: u32,
     height: u32,
@@ -46,10 +47,10 @@ impl GlObj for Texture {
     }
 
     fn bind(&self) {
-        unsafe {gl::BindTexture(gl::TEXTURE_2D, self._id)};
+        unsafe {self.gl.BindTexture(gl::TEXTURE_2D, self._id)};
     }
 
     fn unbind(&self) {
-        unsafe {gl::BindTexture(gl::TEXTURE_2D, 0)};
+        unsafe {self.gl.BindTexture(gl::TEXTURE_2D, 0)};
     }
 }

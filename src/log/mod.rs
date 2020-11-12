@@ -1,4 +1,3 @@
-mod timer;
 pub mod color;
 use std::fmt::Debug;
 use color::Colors;

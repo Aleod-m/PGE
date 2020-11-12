@@ -10,6 +10,7 @@ pub struct App{
     window : glfw::Window,
     events : std::sync::mpsc::Receiver<(f64, glfw::WindowEvent)>,
     glfw : glfw::Glfw,
+    gl : gl::Gl,
 }
 
 impl App {
@@ -39,7 +40,7 @@ impl App {
             None => {core_logger.fatal(&String::from("Failed to create GLFW window."))},
         };
         
-        gl::load_with(|s| window.get_proc_address(s) as *const _);
+        let gl = gl::Gl::load_with(|s| window.get_proc_address(s) as *const _);
         window.make_current();
         window.set_key_polling(true);
     
@@ -50,17 +51,18 @@ impl App {
             window,
             events,
             glfw,
+            gl,
         }
     }
 
     pub fn run(&mut self){
         self.core_logger.info(&String::from("App is Running"));
-        unsafe {gl::ClearColor(1.,0.,0.,1.);}
+        unsafe {self.gl.ClearColor(1.,0.,0.,1.);}
         // Loop until the user closes the window
         while !self.window.should_close() {
             // Swap front and back buffers
             self.window.swap_buffers();
-            unsafe {gl::Clear(gl::COLOR_BUFFER_BIT);}
+            unsafe {self.gl.Clear(gl::COLOR_BUFFER_BIT);}
             // Poll for and process events
             self.glfw.poll_events();
             for (_, event) in glfw::flush_messages(&self.events) {

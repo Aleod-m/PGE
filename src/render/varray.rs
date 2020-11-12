@@ -66,15 +66,17 @@ impl VbLayout {
 
 
 pub struct VArray {
-    _id : GLuint
+    _id : GLuint,
+    gl : gl::Gl,
 }
 
 impl VArray {
-    pub fn new() -> Self {
+    pub fn new(gl : &gl::Gl) -> Self {
         let mut id : GLuint = 0;
-        unsafe {gl::GenVertexArrays(1, &mut id)}
+        unsafe {gl.GenVertexArrays(1, &mut id)}
         Self {
-            _id : id
+            _id : id,
+            gl : gl.clone()
         }
     }
 
@@ -85,8 +87,8 @@ impl VArray {
         let mut elems_count : GLuint = 0;
         for element in vertex_buffer_layout.elements.as_slice() {
             unsafe {
-                gl::EnableVertexAttribArray(elems_count);
-                gl::VertexAttribPointer(elems_count, element.count, element.etype, element.normalized, vertex_buffer_layout.stride, offset as *const GLvoid);
+                self.gl.EnableVertexAttribArray(elems_count);
+                self.gl.VertexAttribPointer(elems_count, element.count, element.etype, element.normalized, vertex_buffer_layout.stride, offset as *const GLvoid);
                 elems_count += 1 as GLuint;
                 offset += element.count as GLuint * VbElements::get_type_size(element.etype);
             }
@@ -103,15 +105,15 @@ impl GlObj for VArray {
     }
 
     fn bind(&self) {
-        unsafe {gl::BindVertexArray(self._id)};
+        unsafe {self.gl.BindVertexArray(self._id)};
     }
 
     fn unbind(&self) {
-        unsafe {gl::BindVertexArray(0)};
+        unsafe {self.gl.BindVertexArray(0)};
     }
 }
 impl Drop for VArray {
     fn drop(&mut self){
-        unsafe {gl::DeleteVertexArrays(1 as GLsizei, &self._id)};
+        unsafe {self.gl.DeleteVertexArrays(1 as GLsizei, &self._id)};
     }
 }

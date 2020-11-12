@@ -24,11 +24,12 @@ impl Vertex {
 
 pub struct Vbuf {
     _id : GLuint,
+    gl : gl::Gl,
     verticies : Vec<f64>,
 }
 
 impl Vbuf {
-    pub fn new(data: Vec<Vertex>) -> Self {
+    pub fn new(gl : &gl::Gl, data: Vec<Vertex>) -> Self {
         unsafe {
             let verticies = data.iter().map(|vertex| vertex.to_data());
             let verticies = {
@@ -40,10 +41,11 @@ impl Vbuf {
             };
             let mut buf = Self {
                 _id : mem::zeroed(),
+                gl : gl.clone(),
                 verticies : verticies,
             };
-            gl::GenBuffers(1 as GLsizei, &mut buf._id);
-            gl::BufferData(
+            gl.GenBuffers(1 as GLsizei, &mut buf._id);
+            gl.BufferData(
                 gl::ARRAY_BUFFER,
                 (data.len() * mem::size_of::<f64>()) as GLsizeiptr,
                 data.as_ptr() as *const GLvoid,
@@ -61,10 +63,10 @@ impl GlObj for Vbuf {
     }
 
     fn bind(&self) {
-        unsafe {gl::BindBuffer(gl::ARRAY_BUFFER, self._id)};
+        unsafe {self.gl.BindBuffer(gl::ARRAY_BUFFER, self._id)};
     }
 
     fn unbind(&self) {
-        unsafe {gl::BindBuffer(gl::ARRAY_BUFFER, 0 as GLuint)};
+        unsafe {self.gl.BindBuffer(gl::ARRAY_BUFFER, 0 as GLuint)};
     }
 }

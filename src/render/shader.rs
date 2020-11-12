@@ -33,47 +33,48 @@ fn create_empty_cstring_with_len(len: usize) -> CString {
 
 pub struct Program {
     _id : GLuint,
+    gl : gl::Gl,
 }
 
 impl Program {
 
-    pub fn from_res(res : &Ressources, name: &str) -> Result<Program, Error> {
+    pub fn from_res(gl : &gl::Gl, res : &Ressources, name: &str) -> Result<Program, Error> {
 
         let ressources_names = POSSIBLE_EXT.iter()
         .map(|(file_ext, _)| format!("{}{}", name, file_ext))
         .collect::<Vec<String>>();
 
         let shaders = ressources_names.iter()
-        .map(|ressource_name| Shader::from_res(res, ressource_name))
+        .map(|ressource_name| Shader::from_res(gl, res, ressource_name))
         .collect::<Result<Vec<Shader>, Error>>()?;
 
-        Program::from_shaders(&shaders[..]).map_err(|message| Error::LinkError{name : name.to_owned(), message})
+        Program::from_shaders(gl, &shaders[..]).map_err(|message| Error::LinkError{name : name.to_owned(), message})
 
     }
     
-    pub fn from_shaders(shaders : &[Shader]) -> Result<Program, String> {
-        let id = unsafe { gl::CreateProgram()};
+    pub fn from_shaders(gl : &gl::Gl, shaders : &[Shader]) -> Result<Program, String> {
+        let id = unsafe { gl.CreateProgram()};
 
         for shader in shaders {
-            unsafe { gl::AttachShader(id, shader.id()); }
+            unsafe { gl.AttachShader(id, shader.id()); }
         }
-        unsafe { gl::LinkProgram(id); }
+        unsafe { gl.LinkProgram(id); }
 
         let mut success : GLint = 1;
         unsafe {
-            gl::GetProgramiv(id, gl::LINK_STATUS, &mut success);
+            gl.GetProgramiv(id, gl::LINK_STATUS, &mut success);
         }
 
         if success == 0 {
             let mut len: gl::types::GLint = 0;
             unsafe {
-                gl::GetProgramiv(id, gl::INFO_LOG_LENGTH, &mut len);
+                gl.GetProgramiv(id, gl::INFO_LOG_LENGTH, &mut len);
             }
 
             let error = create_empty_cstring_with_len(len as usize);
 
             unsafe {
-                gl::GetProgramInfoLog(
+                gl.GetProgramInfoLog(
                     id,
                     len,
                     std::ptr::null_mut(),
@@ -86,11 +87,12 @@ impl Program {
 
 
         for shader in shaders {
-            unsafe { gl::DetachShader(id, shader.id()); }
+            unsafe { gl.DetachShader(id, shader.id()); }
         }
         
         Ok(Self {
             _id : id,
+            gl : gl.clone(),
         })
     
     }
@@ -104,10 +106,10 @@ impl GlObj for Program {
     }
 
     fn bind(&self) {
-        unsafe {gl::UseProgram(self._id);}
+        unsafe {self.gl.UseProgram(self._id);}
     }
     fn unbind(&self) {
-        unsafe {gl::UseProgram(0 as GLuint);}
+        unsafe {self.gl.UseProgram(0 as GLuint);}
     }
     
 }
@@ -115,7 +117,7 @@ impl GlObj for Program {
 impl Drop for Program {
     fn drop(&mut self) {
         unsafe {
-            gl::DeleteProgram(self._id);
+            self.gl.DeleteProgram(self._id);
         }
     }
 }
@@ -123,11 +125,12 @@ impl Drop for Program {
 // shader struct
 pub struct Shader {
     _id : GLuint,
+    gl : gl::Gl,
 }
 
 impl Shader {
 
-    pub fn from_res(res: &Ressources, name: &str) -> Result<Shader, Error> {
+    pub fn from_res(gl : &gl::Gl, res: &Ressources, name: &str) -> Result<Shader, Error> {
         const POSSIBLE_EXT: [(&str, gl::types::GLenum); 6] = [
             (".vert",gl::VERTEX_SHADER),
             (".tesc",gl::TESS_CONTROL_SHADER),
@@ -148,34 +151,34 @@ impl Shader {
         .map_err(|e| {Error::ResourceLoad{name : name.to_owned(), inner : e}})?;
 
 
-        Shader::from_source(source, stype).map_err(|e| {Error::CompileError{name : name.to_owned(), message : e}})
+        Shader::from_source(gl, source, stype).map_err(|e| {Error::CompileError{name : name.to_owned(), message : e}})
     }
 
-    pub fn from_source(source : CString, shader_type : GLenum) -> Result<Self, String> {
-        let id = unsafe {gl::CreateShader(shader_type)};
+    pub fn from_source(gl : &gl::Gl, source : CString, shader_type : GLenum) -> Result<Self, String> {
+        let id = unsafe {gl.CreateShader(shader_type)};
 
 
         unsafe {
-            gl::ShaderSource(id, 1, &source[..].as_ptr(), std::ptr::null());
-            gl::CompileShader(id);
+            gl.ShaderSource(id, 1, &source[..].as_ptr(), std::ptr::null());
+            gl.CompileShader(id);
         }
 
         // check if the compilation was successfull and print the error message if it isn't.
         let mut success : GLint = 1;
         unsafe {
-            gl::GetShaderiv(id, gl::COMPILE_STATUS, &mut success);
+            gl.GetShaderiv(id, gl::COMPILE_STATUS, &mut success);
         }
 
         if success == 0 {
             let mut len: gl::types::GLint = 0;
             unsafe {
-                gl::GetShaderiv(id, gl::INFO_LOG_LENGTH, &mut len);
+                gl.GetShaderiv(id, gl::INFO_LOG_LENGTH, &mut len);
             }
 
             let error = create_empty_cstring_with_len(len as usize);
 
             unsafe {
-                gl::GetShaderInfoLog(
+                gl.GetShaderInfoLog(
                     id,
                     len,
                     std::ptr::null_mut(),
@@ -188,6 +191,7 @@ impl Shader {
 
         Ok(Self {
             _id : id,
+            gl : gl.clone(),
         })
     }
 
@@ -200,7 +204,7 @@ impl Shader {
 impl Drop for Shader {
     fn drop(&mut self) {
         unsafe {
-            gl::DeleteShader(self._id);
+            self.gl.DeleteShader(self._id);
         }
     }
 }

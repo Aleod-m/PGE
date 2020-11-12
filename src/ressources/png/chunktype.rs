@@ -28,6 +28,7 @@ pub struct ChunkType {
     bytes : [u8; 4],
 }
 
+
 impl ChunkType {
     
     // initialization from the bytes
