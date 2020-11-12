@@ -4,7 +4,7 @@ use std::fs;
 use std::io::{self, Read};
 use std::ffi;
 // Module imports
-//pub mod png;
+pub mod image;
 
 
 
