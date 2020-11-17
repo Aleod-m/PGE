@@ -4,7 +4,7 @@ pub mod vec3d;
 pub mod vec4d;
 pub mod mat3;
 pub mod quat;
-pub mod noise;
+//pub mod noise; // TODO make it work with f32
 pub mod fct;
 
 // exposing structs and fct

@@ -1,85 +1,85 @@
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Vec2D {
-    pub x : f64,
-    pub y : f64,
+    pub x : f32,
+    pub y : f32,
 }
 
 impl Vec2D {
-    pub fn new(x : f64, y : f64) -> Self {
+    pub fn new(x : f32, y : f32) -> Self {
         Self {x : x, y : y}
     }
-    pub fn sq_norm(&self) -> f64 {
+    pub fn sq_norm(&self) -> f32 {
         self.x * self.x + self.y * self.y
     }
 
-    pub fn norm(&self) -> f64 {
+    pub fn norm(&self) -> f32 {
         self.sq_norm().sqrt()
     }
 
     pub fn normalize(&mut self){
-        let k = 1.0_f64 / self.norm();
+        let k = 1.0_f32 / self.norm();
         self.x *= k;
         self.y *= k;
         
     }
 
-    pub fn dot(&self, v2 : &Self) -> f64 {
+    pub fn dot(&self, v2 : &Self) -> f32 {
         self.x * v2.x + self.y *v2.y
     }
 
-    pub fn rot(&mut self, angle : &f64){
+    pub fn rot(&mut self, angle : &f32){
         self.x *= angle.cos();
         self.y *= angle.sin();
         
     }
 
-    pub fn det(&self, v2 : &Self) -> f64 {
+    pub fn det(&self, v2 : &Self) -> f32 {
         self.x * v2.y - self.y *v2.x
     }
 
-    pub fn angle(&self, v2 : &Self) -> f64 {
+    pub fn angle(&self, v2 : &Self) -> f32 {
         self.dot(v2) / (self.norm() * v2.norm())
     }
 
     pub fn null() -> Self{
         Vec2D {
-            x: 0_f64,
-            y: 0_f64,
+            x: 0_f32,
+            y: 0_f32,
         }
     }
     pub fn up() -> Self {
         Self {
-            x: 1_f64,
-            y: 0_f64,
+            x: 1_f32,
+            y: 0_f32,
         }
     }
     pub fn down() -> Self {
         Self {
-            x: -1_f64,
-            y: 0_f64,
+            x: -1_f32,
+            y: 0_f32,
         }
     }
     pub fn right() -> Self {
         Self {
-            x : 0_f64,
-            y : -1_f64,
+            x : 0_f32,
+            y : -1_f32,
         }
     }
     pub fn left() -> Self {
         Self {
-            x : 0_f64,
-            y : 1_f64,
+            x : 0_f32,
+            y : 1_f32,
         }
     }
 
-    pub fn to_vec(&self) -> Vec<f64> {
+    pub fn to_vec(&self) -> Vec<f32> {
         vec![self.x, self.y]
     }
 }
 
 
-impl From<(f64, f64)> for Vec2D {
-    fn from(other: (f64, f64)) -> Self {
+impl From<(f32, f32)> for Vec2D {
+    fn from(other: (f32, f32)) -> Self {
         Vec2D::new(other.0, other.1)
     }
 }
@@ -97,9 +97,9 @@ impl std::ops::Add for Vec2D {
     }
 }
 
-impl std::ops::Add<f64> for Vec2D {
+impl std::ops::Add<f32> for Vec2D {
     type Output = Vec2D;
-    fn add(self, other : f64) -> Self {
+    fn add(self, other : f32) -> Self {
         Self{
             x : self.x + other,
             y : self.y + other,
@@ -133,17 +133,17 @@ impl std::ops::Neg for Vec2D {
         }
     }
 }
-impl std::ops::Mul<f64> for Vec2D {
+impl std::ops::Mul<f32> for Vec2D {
     type Output = Vec2D;
-    fn mul(self, other : f64) -> Self {
+    fn mul(self, other : f32) -> Self {
         Self{
             x : self.x * other,
             y : self.y * other,
         }
     }
 }
-impl std::ops::MulAssign<f64> for Vec2D {
-    fn mul_assign(&mut self, other : f64) {
+impl std::ops::MulAssign<f32> for Vec2D {
+    fn mul_assign(&mut self, other : f32) {
         *self = Self{
             x : self.x * other,
             y : self.y * other,

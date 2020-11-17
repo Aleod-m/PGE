@@ -13,8 +13,8 @@ pub struct Vertex {
 }
 
 impl Vertex {
-    pub fn to_data(&self) -> Vec<f64> {
-        let mut v : Vec<f64> = Vec::with_capacity(8);
+    pub fn to_data(&self) -> Vec<f32> {
+        let mut v : Vec<f32> = Vec::with_capacity(8);
         v.extend(self.vertice.to_vec());
         v.extend(self.color.to_vec());
         v.extend(self.uv.to_vec());
@@ -29,11 +29,11 @@ pub struct Vbuf {
 }
 
 impl Vbuf {
-    pub fn new(gl : &gl::Gl, data: Vec<f64>) -> Self {
+    pub fn new(gl : &gl::Gl, data: Vec<f32>) -> Self {
         unsafe {
             // let verticies = data.iter().map(|vertex| vertex.to_data());
             // let verticies = {
-            //     let mut v = Vec::<f64>::new();
+            //     let mut v = Vec::<f32>::new();
             //     for vert in verticies {
             //         v.extend(vert.iter())
             //     }
@@ -47,7 +47,7 @@ impl Vbuf {
             buf.bind();
             gl.BufferData(
                 gl::ARRAY_BUFFER,
-                (data.len() * mem::size_of::<f64>()) as GLsizeiptr,
+                (data.len() * mem::size_of::<f32>()) as GLsizeiptr,
                 data.as_ptr() as *const GLvoid,
                 gl::STATIC_DRAW);
             buf

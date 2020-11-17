@@ -13,13 +13,13 @@ use gl::types::*;
 
 fn main() {
     let mut app = App::new("Test", 1080, 720);
-    let vertices: Vec<f64> = vec![
-        0.0f64,   0.5f64, 0.0f64,
-       -0.5f64,  -0.5f64, 0.0f64,
-        0.5f64,  -0.5f64, 0.0f64
-    ];
+    let vertices: Vec<_> = vec![
+        -0.5,  -0.5, 0.0,
+        0.5,  -0.5, 0.0,
+        0.0,   0.5, 0.0
+        ];
     let indices = vec![
-        0,1,2
+        1,2,3
     ];
 
     // initialize the path for loading ressouce from

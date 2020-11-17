@@ -2,28 +2,28 @@ use crate::math::vec3d::Vec3D;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Quat{
-    pub s : f64,
+    pub s : f32,
     pub v : Vec3D,
 }
 
 impl Quat{
     pub fn null() -> Self {
         Self {
-            s : 0_f64,
+            s : 0_f32,
             v : Vec3D::null(),
         }
     }
 
-    pub fn sq_norm(&self) -> f64 {
+    pub fn sq_norm(&self) -> f32 {
         self.s * self.s + self.v.sq_norm()
     }
 
-    pub fn norm(&self) -> f64 {
+    pub fn norm(&self) -> f32 {
         self.sq_norm().sqrt()
     }
 
     pub fn normalize(&mut self) {
-        let k = 1_f64/self.norm();
+        let k = 1_f32/self.norm();
         self.s *= k;
         self.v *= k;
     }
@@ -40,7 +40,7 @@ impl Quat{
     }
 
     pub fn inv(&self) -> Self {
-        self.conj() * (1_f64 / self.sq_norm())
+        self.conj() * (1_f32 / self.sq_norm())
     }
 
     pub fn inverse(&mut self) {
@@ -86,17 +86,17 @@ impl std::ops::Neg for Quat {
         }
     }
 }
-impl std::ops::Mul<f64> for Quat {
+impl std::ops::Mul<f32> for Quat {
     type Output = Quat;
-    fn mul(self, other : f64) -> Self {
+    fn mul(self, other : f32) -> Self {
         Self{
             s : self.s * other,
             v : self.v * other,
         }
     }
 }
-impl std::ops::MulAssign<f64> for Quat {
-    fn mul_assign(&mut self, other : f64) {
+impl std::ops::MulAssign<f32> for Quat {
+    fn mul_assign(&mut self, other : f32) {
         *self = Self{
             s : self.s * other,
             v : self.v * other,

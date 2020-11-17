@@ -1,16 +1,16 @@
 use crate::math::vec3d::Vec3D;
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Mat3{
-    pub(crate) m_data : [f64; 9]
+    pub(crate) m_data : [f32; 9]
 }
 
 impl Mat3{
     pub fn new() -> Self {
         Self {
-            m_data : [0_f64; 9]
+            m_data : [0f32; 9]
         }
     }
-    pub fn new_from_data(data : [f64; 9]) -> Self {
+    pub fn new_from_data(data : [f32; 9]) -> Self {
         Self {
             m_data : data
         }
@@ -18,15 +18,15 @@ impl Mat3{
 
     pub fn id() -> Self {
         let mut m = Self::new();
-        m.m_data[0] = 1_f64;
-        m.m_data[4] = 1_f64;
-        m.m_data[7] = 1_f64;
+        m.m_data[0] = 1f32;
+        m.m_data[4] = 1f32;
+        m.m_data[7] = 1f32;
         m
     }
-    pub fn get(&self, i: usize, j: usize) -> f64 {
+    pub fn get(&self, i: usize, j: usize) -> f32 {
         self.m_data[3*i+j]
     }
-    pub fn set(&mut self, i: usize, j: usize, value: &f64) {
+    pub fn set(&mut self, i: usize, j: usize, value: &f32) {
         self.m_data[3*i+j] = *value;
     }
 

@@ -1,13 +1,13 @@
 use crate::math::quat::Quat;
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Vec3D {
-    pub x : f64,
-    pub y : f64,
-    pub z : f64,
+    pub x : f32,
+    pub y : f32,
+    pub z : f32,
 }
 
 impl Vec3D {
-    pub fn new(x: f64, y: f64 , z: f64) -> Self {
+    pub fn new(x: f32, y: f32 , z: f32) -> Self {
         Self {
             x : x,
             y : y,
@@ -15,23 +15,23 @@ impl Vec3D {
         }
     }
     
-    pub fn sq_norm(&self) -> f64 {
+    pub fn sq_norm(&self) -> f32 {
         self.x * self.x + self.y * self.y + self.z* self.z
     }
 
-    pub fn norm(&self) -> f64 {
+    pub fn norm(&self) -> f32 {
         self.sq_norm().sqrt()
     }
 
     pub fn normalize(&mut self) {
-        let k = 1.0_f64 / self.norm();
+        let k = 1.0_f32 / self.norm();
         self.x *= k;
         self.y *= k;
         self.z *= k;
     }
 
     pub fn normalized(&self) -> Self{
-        let k = 1.0_f64 / self.norm();
+        let k = 1.0_f32 / self.norm();
         Self {
             x:self.x * k,
             y:self.y * k,
@@ -39,7 +39,7 @@ impl Vec3D {
         }
     }
 
-    pub fn dot(&self, v2 : &Self) -> f64 {
+    pub fn dot(&self, v2 : &Self) -> f32 {
         self.x * v2.x + self.y *v2.y + self.z * v2.z
     }
 
@@ -51,64 +51,64 @@ impl Vec3D {
         }
     }
 
-    pub fn angle(&self, v2 : &Self) -> f64 {
+    pub fn angle(&self, v2 : &Self) -> f32 {
         let cnorm = self.cross(v2).norm();
         cnorm / (self.norm() * v2.norm())
     }
 
     pub fn null() -> Self{
         Vec3D {
-            x: 0_f64,
-            y: 0_f64,
-            z: 0_f64,
+            x: 0_f32,
+            y: 0_f32,
+            z: 0_f32,
         }
     }
     pub fn up() -> Self {
         Self{
-            x:0_f64,
-            y:0_f64,
-            z:1_f64,
+            x:0_f32,
+            y:0_f32,
+            z:1_f32,
         }
     }
     pub fn down() -> Self {
         Self{
-            x:0_f64,
-            y:0_f64,
-            z:-1_f64,
+            x:0_f32,
+            y:0_f32,
+            z:-1_f32,
         }
     }
     pub fn forward() -> Self {
         Self{
-            x:1_f64,
-            y:0_f64,
-            z:0_f64,
+            x:1_f32,
+            y:0_f32,
+            z:0_f32,
         }
     }
     pub fn back() -> Self {
         Self{
-            x:-1_f64,
-            y:0_f64,
-            z:0_f64,
+            x:-1_f32,
+            y:0_f32,
+            z:0_f32,
         }
     }
     pub fn right() -> Self {
         Self{
-            x:0_f64,
-            y:-1_f64,
-            z:0_f64,
+            x:0_f32,
+            y:-1_f32,
+            z:0_f32,
         }
     }
     pub fn left() -> Self {
         Self{
-            x:0_f64,
-            y:1_f64,
-            z:0_f64,
+            x:0_f32,
+            y:1_f32,
+            z:0_f32,
         }
     }
 
-    pub fn rotate(&mut self, angle : f64, axis : &Vec3D) -> Vec3D {
+    pub fn rotate(&mut self, angle : f32, axis : &Vec3D) -> Vec3D {
         let qvec = Quat {
-            s: 0_f64,
+            s: 0_f32,
             v: *self
         };
         let qrot = Quat {
@@ -119,14 +119,14 @@ impl Vec3D {
         return (qrot * qvec * qrot.inv()).v
     }
 
-    pub fn to_vec(&self) -> Vec<f64> {
+    pub fn to_vec(&self) -> Vec<f32> {
         vec![self.x, self.y, self.z]
 
     }
 }
 
-impl From<(f64, f64, f64)> for Vec3D {
-    fn from(other: (f64, f64, f64)) -> Self {
+impl From<(f32, f32, f32)> for Vec3D {
+    fn from(other: (f32, f32, f32)) -> Self {
         Vec3D::new(other.0, other.1, other.2)
     }
 }
@@ -170,9 +170,9 @@ impl std::ops::Neg for Vec3D {
         }
     }
 }
-impl std::ops::Mul<f64> for Vec3D {
+impl std::ops::Mul<f32> for Vec3D {
     type Output = Vec3D;
-    fn mul(self, other : f64) -> Self {
+    fn mul(self, other : f32) -> Self {
         Self{
             x : self.x * other,
             y : self.y * other,
@@ -180,8 +180,8 @@ impl std::ops::Mul<f64> for Vec3D {
         }
     }
 }
-impl std::ops::MulAssign<f64> for Vec3D {
-    fn mul_assign(&mut self, other : f64) {
+impl std::ops::MulAssign<f32> for Vec3D {
+    fn mul_assign(&mut self, other : f32) {
         *self = Self{
             x : self.x * other,
             y : self.y * other,
@@ -189,7 +189,7 @@ impl std::ops::MulAssign<f64> for Vec3D {
         };
     }
 }
-impl std::ops::Mul<Vec3D> for f64 {
+impl std::ops::Mul<Vec3D> for f32 {
     type Output = Vec3D;
     fn mul(self, other : Vec3D) -> Vec3D {
         Vec3D {
