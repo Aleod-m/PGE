@@ -1,5 +1,5 @@
 // External imports
-use gl::types::*;
+//use gl::types::*;
 use std::ffi::{CString};
 // Crate imports
 use crate::ressources::{self, Ressources};
@@ -41,14 +41,20 @@ impl Program {
     pub fn from_res(gl : &gl::Gl, res : &Ressources, name: &str) -> Result<Program, Error> {
 
         let ressources_names = POSSIBLE_EXT.iter()
-        .map(|(file_ext, _)| format!("{}{}", name, file_ext))
-        .collect::<Vec<String>>();
+            .map(|(file_ext, _)| format!("{}{}", name, file_ext))
+            .collect::<Vec<String>>();
+
+        // TODO : get the reesources that match
+
 
         let shaders = ressources_names.iter()
-        .map(|ressource_name| Shader::from_res(gl, res, ressource_name))
-        .collect::<Result<Vec<Shader>, Error>>()?;
+            .map(|ressource_name| Shader::from_res(gl, res, ressource_name))
+            .collect::<Result<Vec<Shader>, Error>>()?;
 
-        Program::from_shaders(gl, &shaders[..]).map_err(|message| Error::LinkError{name : name.to_owned(), message})
+        Program::from_shaders(gl, &shaders[..])
+            .map_err(|message| 
+                Error::LinkError{name : name.to_owned(), message}
+            )
 
     }
     
@@ -141,17 +147,18 @@ impl Shader {
         ];
 
         let stype : GLenum = POSSIBLE_EXT.iter()
-        .find(|&&(extension, _)| {
-            name.ends_with(extension)
-        })
-        .map(|&(_, kind)| kind )
-        .ok_or(Error::CanNotDetermineShaderTypeForResource{name : name.to_owned()})?;
+            .find(|&&(extension, _)| {
+                name.ends_with(extension)
+            })
+            .map(|&(_, kind)| kind )
+            .ok_or(Error::CanNotDetermineShaderTypeForResource{name : name.to_owned()})?;
 
         let source = res.load_cstring(name)
-        .map_err(|e| {Error::ResourceLoad{name : name.to_owned(), inner : e}})?;
+            .map_err(|e| {Error::ResourceLoad{name : name.to_owned(), inner : e}})?;
 
 
-        Shader::from_source(gl, source, stype).map_err(|e| {Error::CompileError{name : name.to_owned(), message : e}})
+        Shader::from_source(gl, source, stype)
+            .map_err(|e| {Error::CompileError{name : name.to_owned(), message : e}})
     }
 
     pub fn from_source(gl : &gl::Gl, source : CString, shader_type : GLenum) -> Result<Self, String> {

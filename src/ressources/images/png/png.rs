@@ -3,7 +3,7 @@ use std::convert::{TryInto, TryFrom};
 // Crate imports
 use crate::ressources::{self, Ressources};
 use crate::render::texture::{Texture, TextureFormat};
-use crate::ressources::png::{
+use super::{
     chunktype::ChunkType,
     chunk::{self, Chunk},
 };
@@ -76,7 +76,7 @@ impl Png {
                 length,
                 chunk_type,
                 data : chunk_data.to_vec(),
-                crc
+                crc,
             };
             chunks.push(chunk);
             if chunk_type.as_string() == "IEND" {
@@ -125,18 +125,18 @@ impl Png {
         Ok(info)
     }
     
-    pub fn as_texture(&self) -> Result<Texture, Error> {
-        let texture : Texture;
-        let mut info = self.read_ihdr().unwrap();
-        info.key_defined = false;
-        let mut chunks_end = false;
-        while !chunks_end {
+    // pub fn as_texture(&self) -> Result<Texture, Error> {
+    //     let texture : Texture;
+    //     let mut info = self.read_ihdr().unwrap();
+    //     info.key_defined = false;
+    //     let mut chunks_end = false;
+    //     while !chunks_end {
             
-        }
+    //     }
 
 
-        Ok(texture)
-    }
+    //     Ok(texture)
+    // }
 
     fn deflate(data : Vec<u8>) {
 

@@ -1,16 +1,15 @@
 use crate::log;
 use glfw::Context;
 
-use gl::types::*;
 use gl;
 
 pub struct App{
+    pub gl : gl::Gl,
+    glfw : glfw::Glfw,
     pub client_logger : log::Logger,
     pub(crate) core_logger : log::Logger,
     window : glfw::Window,
     events : std::sync::mpsc::Receiver<(f64, glfw::WindowEvent)>,
-    glfw : glfw::Glfw,
-    gl : gl::Gl,
 }
 
 impl App {
@@ -43,7 +42,7 @@ impl App {
         let gl = gl::Gl::load_with(|s| window.get_proc_address(s) as *const _);
         window.make_current();
         window.set_key_polling(true);
-    
+        
 
         Self {
             client_logger,
@@ -51,13 +50,14 @@ impl App {
             window,
             events,
             glfw,
-            gl,
+            gl : gl.clone(),
         }
     }
 
-    pub fn run(&mut self){
+    pub fn run(&mut self, draw : &dyn Fn() -> ()) {
         self.core_logger.info(&String::from("App is Running"));
         unsafe {self.gl.ClearColor(1.,0.,0.,1.);}
+        self.glfw.set_swap_interval(glfw::SwapInterval::Sync(1));
         // Loop until the user closes the window
         while !self.window.should_close() {
             // Swap front and back buffers
@@ -74,6 +74,7 @@ impl App {
                     _ => {},
                 }
             }
+            draw();
         }
     }
 }

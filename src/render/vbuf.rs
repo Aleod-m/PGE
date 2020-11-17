@@ -3,11 +3,12 @@ use std::mem;
 use gl::types::*;
 // Crate imports
 use crate::math::{Vec3D, Vec2D};
+use crate::utils::color::RgbColor;
 use super::GlObj;
 
 pub struct Vertex {
     vertice : Vec3D,
-    color : Vec3D,
+    color : RgbColor,
     uv : Vec2D,
 }
 
@@ -25,26 +26,25 @@ impl Vertex {
 pub struct Vbuf {
     _id : GLuint,
     gl : gl::Gl,
-    verticies : Vec<f64>,
 }
 
 impl Vbuf {
-    pub fn new(gl : &gl::Gl, data: Vec<Vertex>) -> Self {
+    pub fn new(gl : &gl::Gl, data: Vec<f64>) -> Self {
         unsafe {
-            let verticies = data.iter().map(|vertex| vertex.to_data());
-            let verticies = {
-                let mut v = Vec::<f64>::new();
-                for vert in verticies {
-                    v.extend(vert.iter())
-                }
-                v
-            };
+            // let verticies = data.iter().map(|vertex| vertex.to_data());
+            // let verticies = {
+            //     let mut v = Vec::<f64>::new();
+            //     for vert in verticies {
+            //         v.extend(vert.iter())
+            //     }
+            //     v
+            // };
             let mut buf = Self {
                 _id : mem::zeroed(),
                 gl : gl.clone(),
-                verticies : verticies,
             };
             gl.GenBuffers(1 as GLsizei, &mut buf._id);
+            buf.bind();
             gl.BufferData(
                 gl::ARRAY_BUFFER,
                 (data.len() * mem::size_of::<f64>()) as GLsizeiptr,
@@ -53,16 +53,15 @@ impl Vbuf {
             buf
         }
     }
-
 }
 
 impl GlObj for Vbuf {
 
-    fn id(&self) -> GLuint{
+    fn id(&self) -> GLuint {
         self._id
     }
 
-    fn bind(&self) {
+    fn bind(&self) -> () {
         unsafe {self.gl.BindBuffer(gl::ARRAY_BUFFER, self._id)};
     }
 

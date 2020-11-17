@@ -1,4 +1,4 @@
-use crate::ressources::png::chunktype::{self, ChunkType};
+use super::chunktype::{self, ChunkType};
 
 #[derive(Debug)]
 pub enum Error {
@@ -6,10 +6,10 @@ pub enum Error {
 }
 
 pub struct Chunk {
-    length : u32,
-    chunk_type : ChunkType,
-    data : Vec<u8>,
-    crc : [u8; 4],
+    pub length : u32,
+    pub chunk_type : ChunkType,
+    pub data : Vec<u8>,
+    pub crc : [u8; 4],
 }
 
 impl Chunk {
@@ -17,7 +17,9 @@ impl Chunk {
     pub fn length(&self) -> u32 { self.length }
     pub fn chunk_type(&self) -> &ChunkType { &self.chunk_type }
     pub fn data(&self) -> &[u8] { &self.data }
-
+    pub fn is_valid(&self) -> bool {
+        self.crc_check()
+    }
     fn crc_check(&self) -> bool {
         // x^32 + x^26 + x^23 + x^22 + x^16 + x^12 + x^11 + x^10 + x^8 + x^7 + x^5 + x^4 + x^2 + x + 1
         let crc_pol : u32 = 0xedb88320; 
@@ -56,7 +58,7 @@ impl Chunk {
         return c ^ 0xffffffff == u32::from_be_bytes(self.crc);
     }
 
-    fn as_bytes(&self) -> Vec<u8> {
+    pub fn as_bytes(&self) -> Vec<u8> {
         self.data.to_vec() //TODO complete in order to write in file
     }
 

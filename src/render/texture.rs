@@ -1,7 +1,7 @@
 // External imports
 use gl::types::*;
 // Crate imports
-use crate::math::Vec3D;
+use crate::utils::color::rgb::RgbColor;
 use crate::ressources::{self, Ressources};
 use super::GlObj;
 
@@ -20,9 +20,9 @@ pub struct Texture {
     _id : GLuint,
     gl : gl::Gl,
     data : Vec<u8>,
-    width: u32,
-    height: u32,
-    format: TextureFormat
+    width: usize,
+    height: usize,
+    format: TextureFormat,
 }
 
 impl Texture {
@@ -36,8 +36,16 @@ impl Texture {
     }
 
 
-    pub fn from_color(w : u32, h : u32, color : Vec3D) {
-        //TODO fn from_color for Texture
+    pub fn from_color(&self, gl : gl::Gl, width : usize, height : usize, color : RgbColor) -> Self {
+        let data  = [color.red, color.green, color.blue].iter().cycle().take(width * height *3).map(|e| *e).collect();
+        Self {
+            _id : 0,
+            gl : gl.clone(),
+            data,
+            width,
+            height,
+            format : TextureFormat::RGB,
+        }
     }
 }
 

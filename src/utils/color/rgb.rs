@@ -16,6 +16,10 @@ impl RgbColor {
             blue,
         }
     }
+
+    pub fn to_vec(&self) -> Vec<f64> {
+        return vec![self.red as f64, self.green as f64, self.blue as f64];
+    }
 }
 
 

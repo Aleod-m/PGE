@@ -96,6 +96,11 @@ impl VArray {
 
     }
 
+    pub fn draw(&self) {
+        self.bind();
+        unsafe {self.gl.DrawArrays(0x0004, 0, 3);}
+    }
+
 }
 
 impl GlObj for VArray {
