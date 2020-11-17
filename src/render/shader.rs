@@ -1,6 +1,6 @@
 // External imports
-//use gl::types::*;
-use std::ffi::{CString};
+use gl::types::*;
+use std::ffi::CString;
 // Crate imports
 use crate::ressources::{self, Ressources};
 use super::GlObj;
@@ -40,13 +40,10 @@ impl Program {
 
     pub fn from_res(gl : &gl::Gl, res : &Ressources, name: &str) -> Result<Program, Error> {
 
-        let ressources_names = POSSIBLE_EXT.iter()
+        let ressources_names : Vec<String> = POSSIBLE_EXT.iter()
             .map(|(file_ext, _)| format!("{}{}", name, file_ext))
-            .collect::<Vec<String>>();
-
-        // TODO : get the reesources that match
-
-
+            .partition(|name| Ressources::name_to_path(&res.path.to_owned(), &(**name).to_owned()).exists()).0;
+        
         let shaders = ressources_names.iter()
             .map(|ressource_name| Shader::from_res(gl, res, ressource_name))
             .collect::<Result<Vec<Shader>, Error>>()?;

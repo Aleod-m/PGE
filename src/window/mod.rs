@@ -56,7 +56,7 @@ impl App {
 
     pub fn run(&mut self, draw : &dyn Fn() -> ()) {
         self.core_logger.info(&String::from("App is Running"));
-        unsafe {self.gl.ClearColor(1.,0.,0.,1.);}
+        unsafe {self.gl.ClearColor(0.,0.,0.,1.);}
         self.glfw.set_swap_interval(glfw::SwapInterval::Sync(1));
         // Loop until the user closes the window
         while !self.window.should_close() {

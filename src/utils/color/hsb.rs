@@ -1,5 +1,5 @@
 use std::convert::From;
-use super::rgb::RgbColor;
+use super::RgbColor;
 
 pub struct HsbColor {
     pub hue : f64,

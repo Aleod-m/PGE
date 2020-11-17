@@ -3,18 +3,25 @@ use std::path::Path;
 use window::App;
 use ressources::Ressources;
 use render::Vbuf;
+use render::Ibuf;
 use render::VbLayout;
 use render::VArray;
 use render::Program;
 use render::GlObj;
+
 use gl::types::*;
+
 fn main() {
     let mut app = App::new("Test", 1080, 720);
     let vertices: Vec<f64> = vec![
+        0.0f64,   0.5f64, 0.0f64,
        -0.5f64,  -0.5f64, 0.0f64,
-        0.5f64,  -0.5f64, 0.0f64,
-        0.0f64,   0.5f64, 0.0f64
+        0.5f64,  -0.5f64, 0.0f64
     ];
+    let indices = vec![
+        0,1,2
+    ];
+
     // initialize the path for loading ressouce from
     let res = match Ressources::from_rel_path(Path::new("./")){
         Ok(res) => res,
@@ -23,6 +30,7 @@ fn main() {
 
     let prog = Program::from_res(&app.gl, &res, "tri").unwrap();
     let vertex_buffer = Vbuf::new(&app.gl, vertices);
+    let index_buffer = Ibuf::new(&app.gl, indices);
     let mut vb_layout = VbLayout::new();
     vb_layout.push_f64(3 as GLint);
 

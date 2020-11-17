@@ -19,7 +19,7 @@ pub enum Error {
 }
 
 pub struct Ressources {
-    path : PathBuf,
+    pub path : PathBuf,
 }
 
 impl Ressources {
@@ -70,6 +70,7 @@ impl Ressources {
         file.read_to_end(&mut bytes)?;
         Ok(bytes)
     }
+
 }
 
 

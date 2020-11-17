@@ -1,5 +1,5 @@
 use std::convert::From;
-use super::hsb::HsbColor;
+use super::HsbColor;
 
 pub struct RgbColor {
     pub red   : u8,

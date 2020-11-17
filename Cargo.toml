@@ -12,6 +12,10 @@ gl = { path = "lib/gl" }
 [dependencies.glfw]
 git = "https://github.com/bjz/glfw-rs.git"
 
+[features]
+gl_debug = ["gl/debug"]
+
 [[example]]
 name = "sandbox"
 path = "examples/sandbox.rs"
+
