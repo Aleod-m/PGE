@@ -2,7 +2,8 @@
 use gl;
 use gl::types::*;
 // Crate imports
-use super::Vbuf;
+use super::VertexBuffer;
+use super::Ibuf;
 use super::GlObj;
 
 pub struct VbElements {
@@ -80,7 +81,7 @@ impl VArray {
         }
     }
 
-    pub fn add_buffer(&self, vertex_buffer : &Vbuf, vertex_buffer_layout : &VbLayout) {
+    pub fn add_buffer(&self, vertex_buffer : &VertexBuffer, vertex_buffer_layout : &VbLayout) {
         self.bind();
         vertex_buffer.bind();
         let mut offset : GLuint = 0;
@@ -98,7 +99,13 @@ impl VArray {
 
     pub fn draw(&self) {
         self.bind();
-        unsafe {self.gl.DrawArrays(0x0004, 0, 3);}
+        unsafe {self.gl.DrawArrays(gl::TRIANGLES, 0, 3);}
+    }
+
+    pub fn draw_indexed(&self, index_buffer : &Ibuf) {
+        self.bind();
+        index_buffer.bind();
+        unsafe {self.gl.DrawElements(gl::TRIANGLES, 6, gl::UNSIGNED_INT, 0 as *const GLvoid);}
     }
 
 }

@@ -16,6 +16,10 @@ git = "https://github.com/bjz/glfw-rs.git"
 gl_debug = ["gl/debug"]
 
 [[example]]
-name = "sandbox"
-path = "examples/sandbox.rs"
+name = "hello_triangle"
+path = "examples/hello_triangle.rs"
+
+[[example]]
+name = "hello_rectangle"
+path = "examples/hello_rectangle.rs"
 
