@@ -3,7 +3,7 @@ use gl;
 use gl::types::*;
 // Crate imports
 use super::VertexBuffer;
-use super::Ibuf;
+use super::IndexBuffer;
 use super::GlObj;
 
 pub struct VbElements {
@@ -102,7 +102,7 @@ impl VArray {
         unsafe {self.gl.DrawArrays(gl::TRIANGLES, 0, 3);}
     }
 
-    pub fn draw_indexed(&self, index_buffer : &Ibuf) {
+    pub fn draw_indexed(&self, index_buffer : &IndexBuffer) {
         self.bind();
         index_buffer.bind();
         unsafe {self.gl.DrawElements(gl::TRIANGLES, 6, gl::UNSIGNED_INT, 0 as *const GLvoid);}

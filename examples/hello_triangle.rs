@@ -3,7 +3,6 @@ use std::path::Path;
 use window::App;
 use ressources::Ressources;
 use render::VertexBuffer;
-use render::Ibuf;
 use render::VbLayout;
 use render::VArray;
 use render::Program;
@@ -18,9 +17,6 @@ fn main() {
         0.5,  -0.5, 0.0,
         0.0,   0.5, 0.0
         ];
-    let indices = vec![
-        1,2,3
-    ];
 
     // initialize the path for loading ressouce from
     let res = match Ressources::from_rel_path(Path::new("./")){
@@ -31,7 +27,6 @@ fn main() {
     let prog = Program::from_res(&app.gl, &res, "tri").unwrap();
     let vertex_buffer = VertexBuffer::new(&app.gl);
     vertex_buffer.set_data::<f32>(&vertices);
-    let index_buffer = Ibuf::new(&app.gl, indices);
     let mut vb_layout = VbLayout::new();
     vb_layout.push_f64(3 as GLint);
 
