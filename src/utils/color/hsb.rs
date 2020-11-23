@@ -1,6 +1,10 @@
 use std::convert::From;
 use super::RgbColor;
 
+pub enum Error {
+    InvalidValues{message : String},
+}
+
 pub struct HsbColor {
     pub hue : f32,
     pub saturation : f32,
@@ -9,13 +13,17 @@ pub struct HsbColor {
 
 impl HsbColor {
 
-    pub fn new(hue : f32, saturation : f32, brightness : f32) -> Self {
-        //TODO : treat invalid parameters case 
-        Self {
+    pub fn new(hue : f32, saturation : f32, brightness : f32) -> Result<Self, Error> {
+        if hue > 1f32 || hue < 0f32 {
+            return Err(Error::InvalidValues{
+                message : "The hue value must be between 0 & 1!".to_string()
+            });
+        }
+        Ok(Self {
             hue,
             saturation,
             brightness,
-        }
+        })
     }
 }
 

@@ -43,7 +43,7 @@ impl<B> Buffer<B> where B : BufferType {
         }
     }
 
-    /// Set the buffer data on the GCU
+    /// Set the buffer data on the GPU
     pub fn set_data<T>(&self, data : &[T]) {
         self.bind();
         unsafe{

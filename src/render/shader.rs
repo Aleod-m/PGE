@@ -39,15 +39,17 @@ pub struct Program {
 impl Program {
 
     pub fn from_res(gl : &gl::Gl, res : &Ressources, name: &str) -> Result<Program, Error> {
-
-        let ressources_names : Vec<String> = POSSIBLE_EXT.iter()
-            .map(|(file_ext, _)| format!("{}{}", name, file_ext))
-            .partition(|name| Ressources::name_to_path(&res.path.to_owned(), &(**name).to_owned()).exists()).0;
         
+        let ressources_names : Vec<String> = POSSIBLE_EXT.iter()
+            // get all coresponding names
+            .map(|(file_ext, _)| format!("{}{}", name, file_ext))
+            // filter out the ones that don't exists
+            .partition(|name| Ressources::name_to_path(&res.path.to_owned(), &(**name).to_owned()).exists()).0;
+        // create the actual shaders from ressources
         let shaders = ressources_names.iter()
             .map(|ressource_name| Shader::from_res(gl, res, ressource_name))
             .collect::<Result<Vec<Shader>, Error>>()?;
-
+        // link the shaders into a Progra
         Program::from_shaders(gl, &shaders[..])
             .map_err(|message| 
                 Error::LinkError{name : name.to_owned(), message}

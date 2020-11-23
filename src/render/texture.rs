@@ -37,7 +37,7 @@ impl Texture {
 
 
     pub fn from_color(&self, gl : gl::Gl, width : usize, height : usize, color : RgbColor) -> Self {
-        let data  = [color.red, color.green, color.blue].iter().cycle().take(width * height *3).map(|e| *e).collect();
+        let data  = [color.red, color.green, color.blue].into_iter().cycle().take(width * height * 3).map(|e| *e).collect();
         Self {
             _id : 0,
             gl : gl.clone(),
