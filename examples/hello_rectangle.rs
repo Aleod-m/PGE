@@ -6,7 +6,7 @@ use render::VertexBuffer;
 use render::IndexBuffer;
 use render::VbLayout;
 use render::VArray;
-use render::Program;
+use render::ShaderProgram;
 use render::GlObj;
 
 use gl::types::*;
@@ -30,7 +30,7 @@ fn main() {
     };
 
     let vertex_array = VArray::new(&app.gl);
-    let prog = Program::from_res(&app.gl, &res, "tri").unwrap();
+    let prog = ShaderProgram::from_res(&app.gl, &res, "tri").unwrap();
     let vertex_buffer = VertexBuffer::new(&app.gl);
     vertex_buffer.set_data::<f32>(&vertices);
     let mut vb_layout = VbLayout::new();
@@ -39,7 +39,6 @@ fn main() {
     vertex_array.add_buffer(&vertex_buffer, &vb_layout);
     let index_buffer = IndexBuffer::new(&app.gl);
     index_buffer.set_data::<u32>(&indices);
-
 
     let draw = || {
         prog.bind();

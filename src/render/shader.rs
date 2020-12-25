@@ -31,33 +31,34 @@ fn create_empty_cstring_with_len(len: usize) -> CString {
     unsafe { CString::from_vec_unchecked(buffer) }
 }
 
-pub struct Program {
+pub struct ShaderProgram {
     _id : GLuint,
     gl : gl::Gl,
 }
 
-impl Program {
+impl ShaderProgram {
 
-    pub fn from_res(gl : &gl::Gl, res : &Ressources, name: &str) -> Result<Program, Error> {
+    pub fn from_res(gl : &gl::Gl, res : &Ressources, name: &str) -> Result<Self, Error> {
         
         let ressources_names : Vec<String> = POSSIBLE_EXT.iter()
             // get all coresponding names
             .map(|(file_ext, _)| format!("{}{}", name, file_ext))
             // filter out the ones that don't exists
             .partition(|name| Ressources::name_to_path(&res.path.to_owned(), &(**name).to_owned()).exists()).0;
+        
         // create the actual shaders from ressources
         let shaders = ressources_names.iter()
             .map(|ressource_name| Shader::from_res(gl, res, ressource_name))
             .collect::<Result<Vec<Shader>, Error>>()?;
         // link the shaders into a Progra
-        Program::from_shaders(gl, &shaders[..])
+        ShaderProgram::from_shaders(gl, &shaders[..])
             .map_err(|message| 
                 Error::LinkError{name : name.to_owned(), message}
             )
 
     }
     
-    pub fn from_shaders(gl : &gl::Gl, shaders : &[Shader]) -> Result<Program, String> {
+    pub fn from_shaders(gl : &gl::Gl, shaders : &[Shader]) -> Result<Self, String> {
         let id = unsafe { gl.CreateProgram()};
 
         for shader in shaders {
@@ -104,7 +105,7 @@ impl Program {
 
 }
 
-impl GlObj for Program {
+impl GlObj for ShaderProgram {
 
     fn id(&self) -> GLuint {
         self._id
@@ -119,7 +120,7 @@ impl GlObj for Program {
     
 }
 
-impl Drop for Program {
+impl Drop for ShaderProgram {
     fn drop(&mut self) {
         unsafe {
             self.gl.DeleteProgram(self._id);
@@ -136,14 +137,6 @@ pub struct Shader {
 impl Shader {
 
     pub fn from_res(gl : &gl::Gl, res: &Ressources, name: &str) -> Result<Shader, Error> {
-        const POSSIBLE_EXT: [(&str, gl::types::GLenum); 6] = [
-            (".vert",gl::VERTEX_SHADER),
-            (".tesc",gl::TESS_CONTROL_SHADER),
-            (".tese",gl::TESS_EVALUATION_SHADER),
-            (".geom",gl::GEOMETRY_SHADER),
-            (".frag",gl::FRAGMENT_SHADER),
-            (".comp",gl::COMPUTE_SHADER),
-        ];
 
         let stype : GLenum = POSSIBLE_EXT.iter()
             .find(|&&(extension, _)| {

@@ -5,7 +5,7 @@ use ressources::Ressources;
 use render::VertexBuffer;
 use render::VbLayout;
 use render::VArray;
-use render::Program;
+use render::ShaderProgram;
 use render::GlObj;
 
 use gl::types::*;
@@ -24,7 +24,7 @@ fn main() {
         Err(_) => app.client_logger.fatal(&"Res path is wrong!".to_string()),
     };
 
-    let prog = Program::from_res(&app.gl, &res, "tri").unwrap();
+    let prog = ShaderProgram::from_res(&app.gl, &res, "tri").unwrap();
     let vertex_buffer = VertexBuffer::new(&app.gl);
     vertex_buffer.set_data::<f32>(&vertices);
     let mut vb_layout = VbLayout::new();

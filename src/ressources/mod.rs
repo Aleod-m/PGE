@@ -4,19 +4,13 @@ use std::fs;
 use std::io::{self, Read};
 use std::ffi;
 // Module imports
-pub mod images;
-
-
-
-
-
 
 #[derive(Debug)]
 pub enum Error {
     FailedToGetPath,
     FileContainsNullByte,
     IO(io::Error)
-}
+} 
 
 pub struct Ressources {
     pub path : PathBuf,
@@ -61,7 +55,7 @@ impl Ressources {
         )
     }
 
-    pub fn load_bytes(&self, name : &str) -> Result<Vec<u8>, Error>{
+    pub fn load_bytes(&self, name : &str) -> Result<Vec<u8>, Error> {
         let mut file = fs::File::open(self.path.join(name))?;
 
         let mut bytes: Vec<u8> = Vec::with_capacity(
