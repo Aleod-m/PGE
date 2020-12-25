@@ -5,15 +5,17 @@ pub struct RgbColor {
     pub red   : u8,
     pub green : u8,
     pub blue  : u8,
+    pub alpha : Option<u8>
 }
 
 impl RgbColor {
 
-    pub fn new(red : u8,green : u8,blue : u8) -> Self {
+    pub fn new(red : u8, green : u8,blue : u8) -> Self {
         Self {
             red,
             green,
             blue,
+            alpha : None,
         }
     }
 
@@ -44,6 +46,7 @@ impl From<HsbColor> for RgbColor {
             red : ((rp + mean) * 255f32) as u8,
             green : ((gp + mean) * 255f32) as u8,
             blue : ((bp + mean) * 255f32) as u8,
+            alpha : None,
         }
     }
 }
