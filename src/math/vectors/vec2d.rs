@@ -1,3 +1,4 @@
+use super::super::fct::fast_isqrt;
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Vec2D {
     pub x : f32,
@@ -8,16 +9,21 @@ impl Vec2D {
     pub fn new(x : f32, y : f32) -> Self {
         Self {x : x, y : y}
     }
+
     pub fn sq_norm(&self) -> f32 {
-        self.x * self.x + self.y * self.y
+        self.dot(self)
     }
 
     pub fn norm(&self) -> f32 {
         self.sq_norm().sqrt()
     }
 
+    pub fn inv_norm(&self) -> f32 {
+        fast_isqrt(self.sq_norm())
+    }
+
     pub fn normalize(&mut self){
-        let k = 1.0_f32 / self.norm();
+        let k = self.inv_norm();
         self.x *= k;
         self.y *= k;
         
@@ -38,7 +44,7 @@ impl Vec2D {
     }
 
     pub fn angle(&self, v2 : &Self) -> f32 {
-        self.dot(v2) / (self.norm() * v2.norm())
+        self.dot(v2) * self.inv_norm() * v2.inv_norm()
     }
 
     pub fn null() -> Self{
@@ -86,7 +92,6 @@ impl From<(f32, f32)> for Vec2D {
 
 
 
-
 impl std::ops::Add for Vec2D {
     type Output = Vec2D;
     fn add(self, other : Self) -> Self {
@@ -96,17 +101,6 @@ impl std::ops::Add for Vec2D {
         }
     }
 }
-
-impl std::ops::Add<f32> for Vec2D {
-    type Output = Vec2D;
-    fn add(self, other : f32) -> Self {
-        Self{
-            x : self.x + other,
-            y : self.y + other,
-        }
-    }
-}
-
 impl std::ops::AddAssign for Vec2D {
     fn add_assign(&mut self, other : Self) {
         *self = Self{
@@ -130,6 +124,16 @@ impl std::ops::Neg for Vec2D {
         Self{
             x : -self.x,
             y : -self.y,
+        }
+    }
+}
+
+impl std::ops::Add<f32> for Vec2D {
+    type Output = Vec2D;
+    fn add(self, other : f32) -> Self {
+        Self{
+            x : self.x + other,
+            y : self.y + other,
         }
     }
 }

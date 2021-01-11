@@ -1,4 +1,5 @@
-use crate::math::vec3d::Vec3D;
+use super::Vec3D;
+use super::fct::fast_isqrt;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Quat{
@@ -21,9 +22,12 @@ impl Quat{
     pub fn norm(&self) -> f32 {
         self.sq_norm().sqrt()
     }
+    pub fn inv_norm(&self) -> f32 {
+        fast_isqrt(self.sq_norm())
+    }
 
     pub fn normalize(&mut self) {
-        let k = 1_f32/self.norm();
+        let k = self.inv_norm();
         self.s *= k;
         self.v *= k;
     }
@@ -40,7 +44,7 @@ impl Quat{
     }
 
     pub fn inv(&self) -> Self {
-        self.conj() * (1_f32 / self.sq_norm())
+        self.conj() * self.inv_norm()
     }
 
     pub fn inverse(&mut self) {

@@ -1,3 +1,4 @@
+use super::super::fct::fast_isqrt;
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Vec4D {
     pub x : f32,
@@ -17,15 +18,19 @@ impl Vec4D {
     }
     
     pub fn sq_norm(&self) -> f32 {
-        self.x*self.x + self.y*self.y + self.z*self.z + self.w*self.w
+        self.dot(self)
     }
 
     pub fn norm(&self) -> f32 {
         self.sq_norm().sqrt()
     }
+    
+    pub fn inv_norm(&self) -> f32 {
+        fast_isqrt(self.sq_norm())
+    }
 
     pub fn normalize(&mut self) {
-        let k = 1.0_f32 / self.norm();
+        let k = self.inv_norm();
         self.x *= k;
         self.y *= k;
         self.z *= k;
@@ -33,7 +38,7 @@ impl Vec4D {
     }
 
     pub fn normalized(&self) -> Self {
-        let k = 1.0_f32 / self.norm();
+        let k = self.inv_norm();
         Self {
             x:self.x * k,
             y:self.y * k,

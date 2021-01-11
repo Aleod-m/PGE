@@ -1,4 +1,4 @@
-use crate::math::vec3d::Vec3D;
+use super::Vec3D;
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Mat3{
     pub(crate) m_data : [f32; 9]
@@ -10,7 +10,8 @@ impl Mat3{
             m_data : [0f32; 9]
         }
     }
-    pub fn new_from_data(data : [f32; 9]) -> Self {
+    
+    pub fn from_data(data : [f32; 9]) -> Self {
         Self {
             m_data : data
         }

@@ -1,4 +1,5 @@
-use crate::math::quat::Quat;
+use super::super::quat::Quat;
+use super::super::fct::fast_isqrt;
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Vec3D {
     pub x : f32,
@@ -16,22 +17,19 @@ impl Vec3D {
     }
     
     pub fn sq_norm(&self) -> f32 {
-        self.x * self.x + self.y * self.y + self.z* self.z
+        self.dot(self)
     }
 
     pub fn norm(&self) -> f32 {
         self.sq_norm().sqrt()
     }
 
-    pub fn normalize(&mut self) {
-        let k = 1.0_f32 / self.norm();
-        self.x *= k;
-        self.y *= k;
-        self.z *= k;
+    pub fn inv_norm(&self) -> f32 {
+        fast_isqrt(self.sq_norm())
     }
 
     pub fn normalized(&self) -> Self{
-        let k = 1.0_f32 / self.norm();
+        let k = self.inv_norm();
         Self {
             x:self.x * k,
             y:self.y * k,
@@ -53,7 +51,7 @@ impl Vec3D {
 
     pub fn angle(&self, v2 : &Self) -> f32 {
         let cnorm = self.cross(v2).norm();
-        cnorm / (self.norm() * v2.norm())
+        cnorm * self.inv_norm() * v2.inv_norm()
     }
 
     pub fn null() -> Self{
@@ -122,12 +120,6 @@ impl Vec3D {
     pub fn to_vec(&self) -> Vec<f32> {
         vec![self.x, self.y, self.z]
 
-    }
-}
-
-impl From<(f32, f32, f32)> for Vec3D {
-    fn from(other: (f32, f32, f32)) -> Self {
-        Vec3D::new(other.0, other.1, other.2)
     }
 }
 
