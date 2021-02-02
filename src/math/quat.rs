@@ -51,8 +51,6 @@ impl Quat{
         *self = self.inv();
     }
 
-
-
 }
 
 impl std::ops::Add for Quat {

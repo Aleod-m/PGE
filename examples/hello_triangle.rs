@@ -14,8 +14,8 @@ fn main() {
     let mut app = App::new("Test", 1080, 720);
     let vertices: Vec<_> = vec![
         -0.5,  -0.5, 0.0,
-        0.5,  -0.5, 0.0,
-        0.0,   0.5, 0.0
+         0.5,  -0.5, 0.0,
+         0.0,   0.5, 0.0
         ];
 
     // initialize the path for loading ressouce from

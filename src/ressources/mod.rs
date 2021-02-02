@@ -26,7 +26,11 @@ impl Ressources {
         })
     }
 
-    pub fn name_to_path(root_dir : &Path, location : &str) -> PathBuf {
+    pub(crate) fn get_file(&self, path : &str) -> Result<fs::File, Error> {
+        fs::File::open(self.path.join(path)).map_err(|e| Error::IO(e))
+    }
+
+    pub(crate) fn name_to_path(root_dir : &Path, location : &str) -> PathBuf {
         let mut path: PathBuf = root_dir.into();
 
         for part in location.split("/") {
@@ -36,8 +40,8 @@ impl Ressources {
         path
     }
 
-    pub fn load_cstring(&self, name : &str) -> Result<ffi::CString, Error> {
-        let mut file = fs::File::open(self.path.join(name))?;
+    pub(crate) fn load_cstring(&self, path : &str) -> Result<ffi::CString, Error> {
+        let mut file = fs::File::open(self.path.join(path))?;
 
         let mut content: Vec<u8> = Vec::with_capacity(
             file.metadata()?.len() as usize + 1
@@ -55,8 +59,8 @@ impl Ressources {
         )
     }
 
-    pub fn load_bytes(&self, name : &str) -> Result<Vec<u8>, Error> {
-        let mut file = fs::File::open(self.path.join(name))?;
+    pub fn load_bytes(&self, path : &str) -> Result<Vec<u8>, Error> {
+        let mut file = fs::File::open(self.path.join(path))?;
 
         let mut bytes: Vec<u8> = Vec::with_capacity(
             file.metadata()?.len() as usize + 1

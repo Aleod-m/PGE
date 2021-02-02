@@ -2,36 +2,29 @@ use gl::{self, types::*};
 use std::mem::size_of;
 
 use super::GlObj;
+pub mod index_buffer;
+pub mod vertex_buffer;
+pub use index_buffer::IndexBuffer;
+pub use vertex_buffer::VertexBuffer;
 
-
-pub trait BufferType {
+/// Generic Buffer struct for all OpenGL buffer types
+trait BufferType {
     const TYPE : GLuint;
 }
 
-pub struct VertexBufferType;
-impl BufferType for VertexBufferType {
-    const TYPE : GLuint = gl::ARRAY_BUFFER;
-}
-
-pub type VertexBuffer = Buffer<VertexBufferType>;
-
-pub struct IndexBufferType;
-impl BufferType for IndexBufferType {
-    const TYPE : GLuint = gl::ELEMENT_ARRAY_BUFFER;
-}
-
-pub type IndexBuffer = Buffer<IndexBufferType>;
-
-
-
-/// Generic Buffer struct for all OpenGL buffer types
-pub struct Buffer<B> where B : BufferType {
+struct Buffer<B> 
+where
+    B : BufferType,
+{
     gl : gl::Gl,
     id : GLuint,
     _marker : std::marker::PhantomData<B>,
 }
 
-impl<B> Buffer<B> where B : BufferType {
+impl<B> Buffer<B>
+where
+    B : BufferType
+{
     /// Creates a new buffer 
     pub fn new(gl : &gl::Gl) -> Self {
         let mut id : GLuint = 0;

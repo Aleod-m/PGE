@@ -23,4 +23,3 @@ path = "examples/hello_triangle.rs"
 [[example]]
 name = "hello_rectangle"
 path = "examples/hello_rectangle.rs"
-

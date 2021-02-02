@@ -43,6 +43,4 @@ impl Logger{
         println!("\x1B[{}m[{}] {}: {:?} \x1B[{}m", self.colorpicker.get_color(3), time::get_time().unwrap(), self.name, content, self.colorpicker.get_color(4));
         panic!("Fatal error message!")
     }
-
-
 }   
