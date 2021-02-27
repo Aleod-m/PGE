@@ -5,3 +5,4 @@ Cargo.lock
 *.h
 *.cpp
 .vscode/
+/examples
