@@ -1,17 +1,17 @@
-use super::Vec3D;
 use super::fct::fast_isqrt;
+use super::Vec3D;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
-pub struct Quat{
-    pub s : f32,
-    pub v : Vec3D,
+pub struct Quat {
+    pub s: f32,
+    pub v: Vec3D,
 }
 
-impl Quat{
+impl Quat {
     pub fn null() -> Self {
         Self {
-            s : 0_f32,
-            v : Vec3D::null(),
+            s: 0_f32,
+            v: Vec3D::null(),
         }
     }
 
@@ -32,10 +32,10 @@ impl Quat{
         self.v *= k;
     }
 
-    pub fn conj(&self)-> Self {
+    pub fn conj(&self) -> Self {
         Self {
-            s : self.s,
-            v : -self.v
+            s: self.s,
+            v: -self.v,
         }
     }
 
@@ -50,84 +50,80 @@ impl Quat{
     pub fn inverse(&mut self) {
         *self = self.inv();
     }
-
-
-
 }
 
 impl std::ops::Add for Quat {
     type Output = Quat;
-    fn add(self, other : Self) -> Self {
-        Self{
-            s : self.s + other.s,
-            v : self.v + other.v,
+    fn add(self, other: Self) -> Self {
+        Self {
+            s: self.s + other.s,
+            v: self.v + other.v,
         }
     }
 }
 impl std::ops::AddAssign for Quat {
-    fn add_assign(&mut self, other : Self) {
-        *self = Self{
-            s : self.s + other.s,
-            v : self.v + other.v,
+    fn add_assign(&mut self, other: Self) {
+        *self = Self {
+            s: self.s + other.s,
+            v: self.v + other.v,
         };
     }
 }
 impl std::ops::Sub for Quat {
     type Output = Quat;
-    fn sub(self, other : Self) -> Self {
-        Self{
-            s : self.s - other.s,
-            v : self.v - other.v,
+    fn sub(self, other: Self) -> Self {
+        Self {
+            s: self.s - other.s,
+            v: self.v - other.v,
         }
     }
 }
 impl std::ops::Neg for Quat {
     type Output = Quat;
     fn neg(self) -> Self {
-        Self{
-            s : -self.s,
-            v : -self.v,
+        Self {
+            s: -self.s,
+            v: -self.v,
         }
     }
 }
 impl std::ops::Mul<f32> for Quat {
     type Output = Quat;
-    fn mul(self, other : f32) -> Self {
-        Self{
-            s : self.s * other,
-            v : self.v * other,
+    fn mul(self, other: f32) -> Self {
+        Self {
+            s: self.s * other,
+            v: self.v * other,
         }
     }
 }
 impl std::ops::MulAssign<f32> for Quat {
-    fn mul_assign(&mut self, other : f32) {
-        *self = Self{
-            s : self.s * other,
-            v : self.v * other,
+    fn mul_assign(&mut self, other: f32) {
+        *self = Self {
+            s: self.s * other,
+            v: self.v * other,
         };
     }
 }
 impl std::ops::Mul<Quat> for Quat {
     type Output = Quat;
-    fn mul(self, other : Quat) -> Self {
-        Self{
-            s : self.s * other.s - self.v.dot(&other.v),
-            v : self.s * other.v + other.s * self.v + self.v.cross(&other.v),
+    fn mul(self, other: Quat) -> Self {
+        Self {
+            s: self.s * other.s - self.v.dot(&other.v),
+            v: self.s * other.v + other.s * self.v + self.v.cross(&other.v),
         }
     }
 }
 impl std::ops::MulAssign<Quat> for Quat {
-    fn mul_assign(&mut self, other : Quat) {
+    fn mul_assign(&mut self, other: Quat) {
         *self = Self {
-            s : self.s * other.s - self.v.dot(&other.v),
-            v : self.s * other.v + other.s * self.v + self.v.cross(&other.v),
+            s: self.s * other.s - self.v.dot(&other.v),
+            v: self.s * other.v + other.s * self.v + self.v.cross(&other.v),
         };
     }
 }
 
-impl std::fmt::Display for Quat{
+impl std::fmt::Display for Quat {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "[{};{}]", self.s, self.v)
     }
 }
-
