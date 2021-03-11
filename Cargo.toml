@@ -18,8 +18,9 @@ gl_debug = ["gl/debug"]
 
 [[example]]
 name = "hello_triangle"
-path = "examples/hello_triangle.rs"
+path = "examples/triangle/hello_triangle.rs"
 
 [[example]]
 name = "hello_rectangle"
-path = "examples/hello_rectangle.rs"
+path = "examples/rectangle/hello_rectangle.rs"
+

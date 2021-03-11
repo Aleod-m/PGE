@@ -5,3 +5,5 @@
 *.java
 *.h
 *.cpp
+.vscode/
+/examples
