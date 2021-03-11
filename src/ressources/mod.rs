@@ -32,8 +32,8 @@ impl RessourceLoader {
         })
     }
 
-    /// Load the rssource as a Cstring.
-    pub fn load_cstring(&self, name: &str, exts : &[&str]) -> Result<ffi::CString, Error> {
+    /// Load the ressource as a Cstring. Usefull for shaders.
+    pub fn load_cstring(&self, name: &str) -> Result<ffi::CString, Error> {
         let mut file = fs::File::open(self.root_dir.join(name))?;
 
         let mut content: Vec<u8> = Vec::with_capacity(file.metadata()?.len() as usize + 1);
@@ -54,6 +54,7 @@ impl RessourceLoader {
         file.read_to_end(&mut bytes)?;
         Ok(bytes)
     }
+
 
     pub fn load_as_reader(&self, name: &str, exts : &[&str]) -> Result<impl Read, Error> {
         fs::File::open(self.root_dir.join(name)).map_err(|e| Error::IO(e))
