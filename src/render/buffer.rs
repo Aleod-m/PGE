@@ -31,21 +31,12 @@ where
 
 impl<B> Buffer<B>
 where
-<<<<<<< HEAD:src/render/buffer/mod.rs
-    B : BufferType
-{
-    /// Creates a new buffer 
-    pub fn new(gl : &gl::Gl) -> Self {
-        let mut id : GLuint = 0;
-        unsafe{gl.GenBuffers(1, &mut id)}
-=======
     B: BufferType,
 {
     /// Creates a new buffer
     pub fn new(gl: &gl::Gl) -> Self {
         let mut id: GLuint = 0;
         unsafe { gl.GenBuffers(1, &mut id) }
->>>>>>> ce189835fa89a1806beb5432e49e7cf048a91ada:src/render/buffer.rs
         Self {
             gl: gl.clone(),
             id,

@@ -46,14 +46,9 @@ impl RessourceLoader {
         Ok(unsafe { ffi::CString::from_vec_unchecked(content) })
     }
 
-<<<<<<< HEAD
-    pub fn load_bytes(&self, path : &str) -> Result<Vec<u8>, Error> {
-        let mut file = fs::File::open(self.path.join(path))?;
-=======
     /// Load the rssource as a vector of bytes.
     pub fn load_bytes(&self, name: &str, exts : &[&str]) -> Result<Vec<u8>, Error> {
         let mut file = fs::File::open(self.root_dir.join(name))?;
->>>>>>> ce189835fa89a1806beb5432e49e7cf048a91ada
 
         let mut bytes: Vec<u8> = Vec::with_capacity(file.metadata()?.len() as usize + 1);
         file.read_to_end(&mut bytes)?;

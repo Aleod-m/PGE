@@ -1,7 +1,7 @@
-.vscode/
 /target
 **/target
-*.lock
+Cargo.lock
 *.java
 *.h
 *.cpp
+.vscode/
