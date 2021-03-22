@@ -44,7 +44,7 @@ fn create_empty_cstring_with_len(len: usize) -> CString {
 pub struct ShaderProgram {
     _id: GLuint,
     shaders : Vec<Shader>,
-    uniforms : HashMap<String, UType>,
+    //uniforms : HashMap<String, UType>,
     gl: gl::Gl,
 }
 
@@ -115,7 +115,7 @@ impl ShaderProgram {
 
         Ok(Self {
             _id: id,
-            uniforms : HashMap::new(),
+            //uniforms : HashMap::new(),
             shaders,
             gl: gl.clone(),
         })
@@ -225,22 +225,3 @@ impl Drop for Shader {
 }
 
 
-enum UType{
-    VEC(Size),
-    MAT(Size),
-    SCALAR(ScalarType),
-}
-
-enum ScalarType {
-    BOOL,
-    INT,
-    UINT,
-    FLOAT,
-    DOUBLE,
-}
-
-enum Size {
-    TWO,
-    THREE,
-    FOUR,
-}

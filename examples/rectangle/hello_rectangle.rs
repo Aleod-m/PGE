@@ -29,7 +29,7 @@ fn main() {
         Ok(res) => res,
         Err(_) => app.client_logger.fatal(&"Res path is wrong!".to_string()),
     };
-    let texture = Texture::from_res(&app.gl, &res, "./Slimes/Slime_16x16.png");
+    let texture = Texture::from_res(&app.gl, &res, "./Slimes/Slime_16x16.png").unwrap();
     let vertex_array = VArray::new(&app.gl);
     let prog = ShaderProgram::from_res(&app.gl, &res, "rect").unwrap();
     let vertex_buffer = VertexBuffer::new(&app.gl);

@@ -1,10 +1,11 @@
 // External imports
-use gl::{self, LINEAR, TEXTURE_MIN_FILTER, UNSIGNED_BYTE, types::*};
+use gl::types::*;
 use image::io::Reader as ImageReader;
 // Crate imports
 use crate::utils::color::rgb::RgbColor;
 use crate::ressources::{self, RessourceLoader};
 
+#[derive(Debug)]
 pub enum Error {
     ResourceLoad { name: String, inner: ressources::Error },
     SizeMismatch,
@@ -31,7 +32,7 @@ const POSSIBLE_EXT: [&str; 6] = [
 
 impl Texture {
 
-    pub fn from_res(gl : &gl::Gl, res : &RessourceLoader, name : &str) -> Self {
+    pub fn from_res(gl : &gl::Gl, res : &RessourceLoader, name : &str) -> Result<Self, Error> {
         let ressources_names = POSSIBLE_EXT
             .iter()
             .map(|(file_ext)| format!("{}{}", name, file_ext));
@@ -40,31 +41,45 @@ impl Texture {
         //.0;
         
 
-        let image = ImageReader::open(res.name_to_path(name))
+        let mut image = ImageReader::open(res.name_to_path(name))
             .unwrap()
             .decode()
             .unwrap()
+            .flipv()
             .to_rgba8();
-        let width = image.width() as i32;
-        let height = image.height() as i32;
+        let flat = image.as_flat_samples_mut();
+        let dims = flat.bounds();
+        let storage_format = match dims.0 {
+            3 => gl::RGB8,
+            4 => gl::RGBA8,
+            _ => return Err(Error::SizeMismatch),
+        };
+        let data_format = match dims.0 {
+            3 => gl::RGB,
+            4 => gl::RGBA,
+            _ => return Err(Error::SizeMismatch),
+        };
+
+        let width = dims.1 as i32;
+        let height = dims.2 as i32;
         let mut id = 0;
-        let data = image.into_raw();
+        let data = flat.as_slice();
         unsafe {
             gl.CreateTextures(gl::TEXTURE_2D, 1, &mut id);
-            gl.TextureStorage2D(id, 1, gl::RGB8, width, height);
+            gl.TextureStorage2D(id, 1, storage_format, width, height);
             gl.TextureParameteri(id, gl::TEXTURE_MIN_FILTER, gl::LINEAR as i32);
-            gl.TextureParameteri(id, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32);
-            gl.TextureSubImage2D(id, 0, 0, 0, width, height, gl::RGB, gl::UNSIGNED_BYTE, data.as_ptr() as *const GLvoid)
+            gl.TextureParameteri(id, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
+            gl.TextureSubImage2D(id, 0, 0, 0, width, height, data_format, gl::UNSIGNED_BYTE, data.as_ptr() as *const GLvoid)
         }
 
-        Self {
+        Ok(Self {
             id,
             gl : gl.clone(),
-            data,
+            data : data.to_vec(),
             width,
             height,
 
-        }
+        })
     }
 
     pub fn set_pixel(&mut self, i : usize, j : usize, color : RgbColor) {
